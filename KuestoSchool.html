@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>KuestoSchool</title>
+<style>
+:root{--bg:#fff;--surface:#f7f8fa;--line:#e6e8ec;--text:#111318;--muted:#6b7280;--accent:#2563eb;--accent-soft:#eaf1ff;--ok:#16a34a;--warn:#d97706;color-scheme:light}
+[data-theme="dark"]{--bg:#0d0f14;--surface:#161921;--line:#262b36;--text:#eef0f4;--muted:#9aa3b2;--accent:#60a5fa;--accent-soft:#1a2740;--ok:#4ade80;--warn:#fbbf24;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:inherit;text-decoration:none}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;padding:6px 10px 22px}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:var(--accent);display:grid;place-items:center;color:#fff}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--muted);font-size:14px;margin-bottom:2px}
+.nav a:hover{background:var(--surface);color:var(--text)}
+.nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav small{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:14px 12px 6px}
+main{padding:28px clamp(16px,4vw,44px);max-width:1100px;width:100%}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em}
+h2{font-size:17px;font-weight:600;margin-bottom:12px}
+.sub{color:var(--muted);font-size:14px;margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:9px 14px;border-radius:10px;font:inherit;font-size:14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{filter:brightness(.97)}
+.icon-btn{width:40px;height:40px;padding:0;justify-content:center}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.card{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:20px}
+.stat-ic{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-bottom:12px}
+.stat-val{font-size:24px;font-weight:700}
+.bar{height:8px;background:var(--surface);border-radius:99px;overflow:hidden;margin-top:10px;border:1px solid var(--line)}
+.bar>span{display:block;height:100%;background:var(--accent);border-radius:99px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600;flex-shrink:0}
+.rank{width:26px;color:var(--muted);font-size:13px;font-weight:600}
+.grow{flex:1}
+.pill{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.pill.ok{color:var(--ok)}
+.opt{display:block;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:14px;margin-bottom:8px;cursor:pointer}
+.opt.correct{border-color:var(--ok);background:rgba(22,163,74,.1)}
+.opt.wrong{border-color:#dc2626;background:rgba(220,38,38,.08)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button{border:1px solid var(--line);background:var(--bg);color:var(--muted);padding:7px 14px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer}
+.tabs button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+input,select{font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+.field{margin-bottom:14px}
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.lvl{width:72px;height:72px;border-radius:50%;border:4px solid var(--accent);display:grid;place-items:center;font-weight:700;font-size:20px;color:var(--accent)}
+.mobile-bar{display:none}
+.center-card{max-width:380px;margin:60px auto}
+.tag{display:inline-block;font-size:12px;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:6px;margin-right:6px}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(22,163,74,.12)}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#view>*{animation:up .5s cubic-bezier(.2,.8,.2,1) both}
+.grid>*{animation:up .5s cubic-bezier(.2,.8,.2,1) both}
+.grid>*:nth-child(2){animation-delay:.06s}.grid>*:nth-child(3){animation-delay:.12s}.grid>*:nth-child(4){animation-delay:.18s}.grid>*:nth-child(5){animation-delay:.24s}.grid>*:nth-child(6){animation-delay:.3s}
+.center-card{animation:up .5s both}
+.bar>span{transform-origin:left;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
+.lvl,.logo-mark{animation:pop .6s both}
+.lvl{animation-delay:.2s}
+.pill.ok{animation:pulse 2s infinite}
+.opt{transition:transform .2s,border-color .2s,background .2s}
+.opt:hover{transform:translateX(4px);border-color:var(--accent)}
+.opt.correct,.opt.wrong{animation:shake .4s}
+.card,.hero,.btn,.row,.stat-ic,.nav a{transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.07)}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.96)}
+.nav a:hover{transform:translateX(4px)}
+.row:hover{background:var(--surface)}
+.stat-ic .ic{transition:transform .3s}.stat-ic:hover .ic{transform:rotate(-8deg) scale(1.1)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 18px;border-radius:12px;font-size:14px;transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:50}
+#toast.show{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:820px){
+ .app{grid-template-columns:1fr}
+ aside{position:fixed;left:-260px;top:0;width:250px;height:100vh;background:var(--bg);z-index:20;transition:left .25s;box-shadow:0 0 0 1px var(--line)}
+ aside.open{left:0}
+ .mobile-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:10}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+ <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol>
+ <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></symbol>
+ <symbol id="i-test" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
+ <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M8 21h8M9 17h6"/></symbol>
+ <symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="15" r="6"/><path d="M8.5 9L6 3h4l2 4 2-4h4l-2.5 6"/></symbol>
+ <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9 17h6"/></symbol>
+ <symbol id="i-family" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c.5-3.5 3-5 6-5s5.5 1.5 6 5M15 15c2 0 4 1 5 4"/></symbol>
+ <symbol id="i-teacher" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></symbol>
+ <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></symbol>
+ <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></symbol>
+ <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+ <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+ <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+ <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.5C12 2.5 18 8.5 18 14a6 6 0 0 1-12 0c0-5.5 6-11.5 6-11.5z"/><path d="M12 12.5s2 1.8 2 3.5a2 2 0 0 1-4 0c0-1.7 2-3.5 2-3.5z"/></symbol>
+ <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></symbol>
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></symbol>
+ <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+ <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+ <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-12 7l-5 1 1-4a8 8 0 1 1 16-4z"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+ <symbol id="i-book2" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></symbol>
+ <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></symbol>
+ <symbol id="i-task" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l1.5 1.5L12 8M8 15l1.5 1.5L12 14M14 9h2M14 15h2"/></symbol>
+ <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 4h14v12l-4 4H5z"/><path d="M15 16v4M9 9h6M9 13h4"/></symbol>
+ <symbol id="i-news" viewBox="0 0 24 24"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2M7 9h6M7 13h6"/></symbol>
+ <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></symbol>
+ <symbol id="i-dict" viewBox="0 0 24 24"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></symbol>
+ <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5h3.5"/></symbol>
+ <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.3 6.5 20.4l1-6.3L3 9.7l6.2-.9z"/></symbol>
+ <symbol id="i-logo" viewBox="0 0 24 24"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/></symbol>
+</svg>
+
+<div class="mobile-bar">
+ <button class="btn icon-btn" onclick="toggleSide()" aria-label="Menyu"><svg class="ic"><use href="#i-menu"/></svg></button>
+ <strong>KuestoSchool</strong>
+ <button class="btn icon-btn" onclick="toggleTheme()" aria-label="Mavzu"><svg class="ic"><use href="#i-moon"/></svg></button>
+</div>
+
+<div class="app" id="app">
+ <aside id="side">
+  <div class="logo"><div class="logo-mark"><svg class="ic" style="width:18px;height:18px"><use href="#i-logo"/></svg></div>KuestoSchool</div>
+  <nav class="nav" id="nav"></nav>
+ </aside>
+ <main id="view"></main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const ic = (n, size) => `<svg class="ic" ${size?`style="width:${size}px;height:${size}px"`:''}><use href="#i-${n}"/></svg>`;
+
+const PAGES = [
+ {group:"Asosiy"},
+ {id:"home", t:"Bosh sahifa", i:"home"},
+ {id:"dashboard", t:"Kabinet", i:"user"},
+ {id:"tests", t:"Testlar", i:"test"},
+ {id:"ranking", t:"Reyting", i:"trophy"},
+ {id:"achievements", t:"Yutuqlar", i:"medal"},
+ {id:"ai", t:"AI yordamchi", i:"bot"},
+ {group:"Qo‘shimcha"},
+ {id:"library", t:"Kutubxona", i:"book"},
+ {id:"schedule", t:"Dars jadvali", i:"cal"},
+ {id:"homework", t:"Uy vazifalari", i:"task"},
+ {id:"qa", t:"Savol-javob", i:"msg"},
+ {id:"dict", t:"Lug‘at", i:"dict"},
+ {id:"calc", t:"Kalkulyator", i:"calc"},
+ {group:"Rollar"},
+ {id:"parent", t:"Ota-ona", i:"family"},
+ {id:"teacher", t:"O‘qituvchi", i:"teacher"},
+ {id:"admin", t:"Developer panel", i:"shield"},
+ {id:"settings", t:"Sozlamalar", i:"gear"},
+ {id:"login", t:"Kirish / Ro‘yxat", i:"logout"}
+];
+
+function renderNav(active){
+ $('#nav').innerHTML = PAGES.filter(p => p.id!=='admin' || (USER && USER.role==='dev')).map(p => p.group
+  ? `<small>${p.group}</small>`
+  : `<a href="#${p.id}" class="${p.id===active?'active':''}" onclick="closeSide()">${ic(p.i)}${p.t}</a>`).join('');
+}
+
+const statCard = (i,label,val) => `<div class="card"><div class="stat-ic">${ic(i)}</div><div class="sub">${label}</div><div class="stat-val">${val}</div></div>`;
+const head = (t,s,actions='') => `<header class="top"><div><h1>${t}</h1><p class="sub">${s}</p></div><div>${actions}</div></header>`;
+
+const QUESTIONS = [
+ {s:"Matematika", q:"2x + 6 = 14 bo‘lsa, x nechaga teng?", o:["3","4","5","6"], a:1},
+ {s:"Fizika", q:"Yorug‘likning vakuumdagi tezligi taxminan qancha?", o:["3·10⁵ km/s","3·10⁸ m/s","3·10³ m/s","3·10⁶ m/s"], a:1},
+ {s:"Informatika", q:"Ikkilik sanoq tizimida 1010 qaysi o‘nlik songa teng?", o:["8","10","12","14"], a:1},
+];
+let qi = 0, score = 0;
+
+const pages = {
+ home: () => `
+  <div class="hero" style="background:var(--surface)">
+   <div class="grow" style="min-width:260px">
+    <h1 style="font-size:32px">${CONTENT.heroTitle}</h1>
+    <p class="sub" style="font-size:15px;max-width:520px">${CONTENT.heroSub}</p>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+     <a class="btn primary" href="#login">${ic('play')} Boshlash</a>
+     <a class="btn" href="#ranking">${ic('trophy')} Reyting</a>
+    </div>
+   </div>
+  </div>
+  <div class="grid">
+   ${[['test','Fanlar bo‘yicha testlar','Matematika, fizika, ingliz tili va boshqalar'],['trophy','Haftalik TOP 10','Sinf va maktab reytingi'],['bolt','XP va level','Har bir to‘g‘ri javob — ball'],['bot','AI yordamchi','Mavzularni sodda tushuntirish']].map(([i,t,d])=>`<div class="card"><div class="stat-ic">${ic(i)}</div><h2>${t}</h2><p class="sub">${d}</p></div>`).join('')}
+  </div>`,
+
+ login: () => `
+  <div class="center-card card" id="authcard">
+   <h1 style="margin-bottom:6px">${CONTENT.loginTitle}</h1>
+   <p class="sub" style="margin-bottom:22px">Hisobingizga kiring yoki ro‘yxatdan o‘ting</p>
+   <div class="field"><label>Email yoki login</label><input id="l-email" placeholder="ism@maktab.uz"></div>
+   <div class="field"><label>Parol</label><input id="l-pass" type="password" placeholder="••••••••"></div>
+   <div id="err" style="color:#dc2626;font-size:13px;min-height:18px;margin-bottom:8px"></div><button class="btn primary" onclick="doLogin()" style="width:100%;justify-content:center">Kirish</button>
+   <p class="sub" style="text-align:center;margin-top:16px">Yangi o‘quvchimisiz? <a href="#" onclick="showReg(event)" style="color:var(--accent);font-weight:600">Ro‘yxatdan o‘tish</a></p>
+  </div>`,
+
+ dashboard: () => `
+  ${head('Salom, '+USER.name+'!', (USER.role==='dev'?'Dasturchi':USER.cls+' sinf')+' · Shaxsiy kabinet', `<span class="pill ok">${ic('flame')} 0 kunlik streak</span>`)}
+  <div class="hero">
+   <div class="lvl">0</div>
+   <div class="grow" style="min-width:220px">
+    <div style="display:flex;justify-content:space-between;font-size:14px"><strong>Level 0</strong><span class="sub">0 / 100 XP</span></div>
+    <div class="bar"><span style="width:0%"></span></div>
+    <p class="sub" style="margin-top:8px">Keyingi levelgacha 100 XP kerak</p>
+   </div>
+  </div>
+  <div class="grid" style="margin-bottom:22px">
+   ${statCard('chart','O‘zlashtirish','86%')}
+   ${statCard('trophy','Sinf reytingi','#3')}
+   ${statCard('test','Testlar','0')}
+   ${statCard('medal','Medallar','0')}
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+   <div class="card"><h2>Fanlar bo‘yicha</h2>
+    ${[['Matematika',0],['Ingliz tili',0],['Fizika',0],['Informatika',0]].map(([n,v])=>`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${n}</span><span class="sub">${v}%</span></div><div class="bar"><span style="width:${v}%"></span></div></div>`).join('')}
+   </div>
+   <div class="card"><h2>O‘qish tarixi</h2>
+    ${[['test','Matematika — Kvadrat tenglamalar','Bugun · 18/20'],['book','Fizika — Kinematika mavzusi','Kecha'],['check','Informatika — Ikkilik sanoq','2 kun oldin']].map(([i,t,d])=>`<div class="row"><div class="stat-ic" style="margin:0">${ic(i)}</div><div class="grow"><div style="font-size:14px">${t}</div><div class="sub" style="font-size:12px">${d}</div></div></div>`).join('')}
+   </div>
+  </div>`,
+
+ tests: () => {
+  if (qi >= QUESTIONS.length) {
+   return `${head('Natija','Test yakunlandi')}<div class="card center-card" style="text-align:center;margin:20px auto">
+    <div class="stat-ic" style="margin:0 auto 14px;width:56px;height:56px">${ic('trophy',28)}</div>
+    <div class="stat-val">${score} / ${QUESTIONS.length}</div>
+    <p class="sub" style="margin:8px 0 20px">+${score*20} XP qo‘shildi</p>
+    <button class="btn primary" onclick="restartTest()">${ic('play')} Qayta boshlash</button></div>`;
+  }
+  const Q = QUESTIONS[qi];
+  return `${head('Testlar', `${Q.s} · Savol ${qi+1} / ${QUESTIONS.length}`, `<span class="pill">${ic('clock')} 01:30</span>`)}
+  <div class="bar" style="margin-bottom:22px"><span style="width:${(qi/QUESTIONS.length)*100}%"></span></div>
+  <div class="card" style="max-width:640px">
+   <h2 style="font-size:19px;margin-bottom:18px">${Q.q}</h2>
+   ${Q.o.map((o,i)=>`<button class="opt" id="o${i}" onclick="answer(${i})">${o}</button>`).join('')}
+   <div id="next" style="margin-top:10px"></div>
+  </div>`;
+ },
+
+ ranking: () => {
+  const data=[['Dilnoza R.',2840],['Aziza T.',2450],['Jasur K.',2310],['Malika S.',2180],['Oybek N.',2050],['Sardor M.',1990],['Nodira A.',1875],['Bekzod Q.',1720]];
+  return `${head('Reyting','Haftalik TOP 10',`<div class="tabs" style="margin:0"><button class="on" onclick="tabOn(this)">Hafta</button><button onclick="tabOn(this)">Oy</button><button onclick="tabOn(this)">Maktab</button></div>`)}
+  <div class="card">${data.map(([n,x],i)=>`<div class="row"><span class="rank">${i+1}</span><div class="avatar">${n[0]}</div><div class="grow">${n}</div><span class="pill">${ic('bolt',14)} ${x} XP</span></div>`).join('')}</div>`;
+ },
+
+ achievements: () => `${head('Yutuqlar','Medallar va maxsus mukofotlar')}
+  <div class="grid">
+   ${[['flame','7 kunlik streak',true],['star','Birinchi test',true],['trophy','Sinf chempioni',false],['bolt','1000 XP',true],['check','Mukammal natija',true],['medal','Turnir g‘olibi',false]].map(([i,t,ok])=>`<div class="card" style="${ok?'':'opacity:.5'}"><div class="stat-ic">${ic(i)}</div><h2 style="margin:0">${t}</h2><p class="sub" style="margin-top:6px">${ok?'Olingan':'Qulflangan'}</p></div>`).join('')}
+  </div>`,
+
+ ai: () => `${head('AI yordamchi','Savollar, misollar, insho va ingliz tili')}
+  <div class="tabs">${['Matematika','Insho','Ingliz tili','Mavzuni tushuntir'].map((t,i)=>`<button class="${i==0?'on':''}" onclick="tabOn(this)">${t}</button>`).join('')}</div>
+  <div class="card" style="max-width:720px;min-height:320px;display:flex;flex-direction:column;gap:14px">
+   <div style="align-self:flex-start;background:var(--surface);padding:12px 14px;border-radius:14px;max-width:80%;font-size:14px">Salom! Men sizga matematik masalalarni yechishda yordam beraman. Savolingizni yozing.</div>
+   <div style="align-self:flex-end;background:var(--accent);color:#fff;padding:12px 14px;border-radius:14px;max-width:80%;font-size:14px">2x + 6 = 14 ni qanday yechish mumkin?</div>
+   <div style="align-self:flex-start;background:var(--surface);padding:12px 14px;border-radius:14px;max-width:80%;font-size:14px">2x = 14 − 6 = 8, demak x = 4.</div>
+   <div style="margin-top:auto;display:flex;gap:8px"><input id="ai-in" placeholder="Savolingizni yozing..." onkeydown="if(event.key==='Enter')sendAI()"><button class="btn primary icon-btn" onclick="sendAI()">${ic('play')}</button></div>
+  </div>`,
+
+ library: () => `${head('Elektron kutubxona','Darsliklar va video darslar')}
+  <div class="grid">${['Matematika 9','Fizika 9','Ona tili 9','Ingliz tili B1','Tarix','Biologiya'].map((t,i)=>`<div class="card" style="cursor:pointer" onclick="toast('Material ochildi')"><div class="stat-ic">${ic(i%2?'book':'video')}</div><h2 style="margin-bottom:6px">${t}</h2><span class="tag">${i%2?'PDF':'Video'}</span></div>`).join('')}</div>`,
+
+ schedule: () => {
+  const days=[['Du',[['Matematika','08:30'],['Ingliz tili','10:00']]],['Se',[['Fizika','08:30'],['Informatika','11:00']]],['Ch',[['Ona tili','08:30'],['Tarix','10:00']]],['Pa',[['Biologiya','08:30'],['Kimyo','10:00']]],['Ju',[['Matematika','08:30']]]];
+  return `${head('Dars jadvali','Bu hafta')}<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">${days.map(([d,l])=>`<div class="card"><h2>${d}</h2>${l.map(([s,t])=>`<div class="row" style="padding:8px 0"><span class="sub" style="width:44px;font-size:12px">${t}</span><span style="font-size:14px">${s}</span></div>`).join('')}</div>`).join('')}</div>`;
+ },
+
+ homework: () => `${head('Uy vazifalari','Topshiriqlar va muddatlar',`<button class="btn primary" onclick="toast('Yangi vazifa qo‘shildi')">${ic('plus')} Yangi</button>`)}
+  <div class="card">${[['Matematika','Darslik 45-bet, 1–6 misollar','Ertaga',false],['Ingliz tili','Essay: My school (120 so‘z)','Juma',false],['Fizika','Mashq 12.3','Kecha',true]].map(([s,t,d,ok])=>`<div class="row"><div class="stat-ic" style="margin:0">${ic(ok?'check':'task')}</div><div class="grow"><div style="font-size:14px">${t}</div><div class="sub" style="font-size:12px">${s} · ${d}</div></div><span class="pill ${ok?'ok':''}" style="cursor:pointer" onclick="hw(this)">${ok?'Bajarildi':'Kutilmoqda'}</span></div>`).join('')}</div>`,
+
+ qa: () => `${head('Savol-javob','Savollar va javoblar',`<button class="btn primary" onclick="toast('Savolingiz yuborildi')">${ic('plus')} Savol berish</button>`)}
+  <div class="card">${[['Kvadrat tenglamani qanday yechish mumkin?','5 javob'],['Ingliz tilida Present Perfect qachon ishlatiladi?','3 javob']].map(([q,a])=>`<div class="row"><div class="stat-ic" style="margin:0">${ic('msg')}</div><div class="grow"><div style="font-size:14px">${q}</div><div class="sub" style="font-size:12px">${a}</div></div></div>`).join('')}</div>`,
+
+ dict: () => `${head('Lug‘at','Ingliz–o‘zbek lug‘at')}
+  <div class="card" style="max-width:560px"><div class="field"><label>So‘z</label><input placeholder="masalan: knowledge" oninput="dictSearch(this.value)"></div>
+  <div class="row" id="dres"><div class="stat-ic" style="margin:0">${ic('dict')}</div><div><strong>knowledge</strong><div class="sub">bilim, malaka · /ˈnɒlɪdʒ/</div></div></div></div>`,
+
+ calc: () => `${head('Kalkulyator','Oddiy hisob-kitob')}
+  <div class="card" style="max-width:320px"><div class="card" style="background:var(--surface);text-align:right;font-size:28px;font-weight:600;margin-bottom:12px;padding:16px" id="calc-d">0</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${['7','8','9','÷','4','5','6','×','1','2','3','−','0','.','=','+'].map(b=>`<button class="btn" style="justify-content:center;padding:14px 0" onclick="calcKey('${b}')">${b}</button>`).join('')}</div></div>`,
+
+ parent: () => `${head('Ota-ona kabineti','Farzandingiz natijalari')}
+  <div class="grid">${statCard('chart','O‘zlashtirish','86%')}${statCard('check','Davomat','96%')}${statCard('trophy','Sinf reytingi','#3')}${statCard('test','Testlar (oy)','18')}</div>`,
+
+ teacher: () => `${head('O‘qituvchi kabineti','9-A sinf',`<button class="btn primary" onclick="toast('Yangi test yaratish oynasi ochildi')">${ic('plus')} Test yaratish</button>`)}
+  <div class="grid" style="margin-bottom:20px">${statCard('family','O‘quvchilar','28')}${statCard('test','Faol testlar','3')}${statCard('task','Vazifalar','5')}</div>
+  <div class="card"><h2>So‘nggi natijalar</h2>${[['Aziza T.',95],['Jasur K.',82],['Malika S.',68]].map(([n,v])=>`<div class="row"><div class="avatar">${n[0]}</div><div class="grow">${n}</div><div style="width:140px"><div class="bar" style="margin:0"><span style="width:${v}%"></span></div></div><span class="sub" style="width:40px;text-align:right">${v}%</span></div>`).join('')}</div>`,
+
+ admin: () => (!USER || USER.role!=='dev') ? `${head('Ruxsat yo‘q','Bu bo‘lim faqat dasturchi akkaunti uchun')}` : `${head('Developer panel','Platforma boshqaruvi · Aslbek Karimov')}
+  <div class="grid" style="margin-bottom:20px">${statCard('family','O‘quvchilar','1 240')}${statCard('teacher','O‘qituvchilar','64')}${statCard('test','Testlar','318')}${statCard('chart','Faol bugun','612')}</div>
+  <div class="card"><h2>E’lon joylash</h2><div class="field"><input placeholder="E’lon matni..."></div><button class="btn primary" onclick="toast('E’lon joylandi')">${ic('bell')} Joylash</button></div>`,
+
+ settings: () => `${head('Sozlamalar','Profil va ko‘rinish')}
+  <div class="card" style="max-width:560px">
+   <div class="field"><label>Ism</label><input value="Aziza Tursunova"></div>
+   <div class="field"><label>Sinf</label><select><option>9-A</option><option>9-B</option></select></div>
+   <div class="row" style="border:0"><div class="grow">Dark mode</div><button class="btn" onclick="toggleTheme()">${ic('moon')} O‘zgartirish</button></div>
+   <div class="row" style="border:0"><div class="grow">Bildirishnomalar</div><span class="pill ok" style="cursor:pointer" onclick="this.classList.toggle('ok');this.textContent=this.classList.contains('ok')?'Yoqilgan':'O‘chirilgan'">Yoqilgan</span></div>
+  </div>`
+};
+
+function answer(i){
+ const Q = QUESTIONS[qi];
+ document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+ $('#o'+Q.a).classList.add('correct');
+ if(i!==Q.a) $('#o'+i).classList.add('wrong'); else score++;
+ $('#next').innerHTML = `<button class="btn primary" onclick="nextQ()">Keyingi savol</button>`;
+}
+function nextQ(){ qi++; route(); }
+function restartTest(){ qi=0; score=0; route(); }
+
+function route(){
+ const id = (location.hash.slice(1) || 'home');
+ const page = (id==='dashboard' && !USER) ? 'login' : (pages[id] ? id : 'home');
+ renderNav(page);
+ $('#view').innerHTML = pages[page]();
+ window.scrollTo(0,0);
+}
+function toggleTheme(){
+ const d = document.documentElement;
+ d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark';
+}
+function toggleSide(){ $('#side').classList.toggle('open'); }
+function toast(m){ let t=$('#toast'); if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),2200); }
+let USERS = [{username:'karimov', pass:'karimov2424', name:'Aslbek', fam:'Karimov', cls:'Developer', role:'dev', email:'karimov@kuesto.uz'}];
+let USER = null;
+function err(m){ const e=$('#err'); if(e) e.textContent=m; }
+function showReg(e){
+ e.preventDefault();
+ $('#authcard').innerHTML = `<h1 style="margin-bottom:6px">Ro‘yxatdan o‘tish</h1>
+ <p class="sub" style="margin-bottom:22px">Yangi o‘quvchi hisobi yarating</p>
+ <div class="field"><label>Username</label><input id="r-user"></div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  <div class="field"><label>Ism</label><input id="r-ism"></div>
+  <div class="field"><label>Familiya</label><input id="r-fam"></div>
+ </div>
+ <div class="field"><label>Sinf</label><select id="r-sinf"><option>8-A</option><option>8-B</option><option>9-A</option><option>9-B</option><option>10-A</option><option>10-B</option><option>11-A</option><option>11-B</option></select></div>
+ <div class="field"><label>Email</label><input id="r-email" placeholder="ism@maktab.uz"></div>
+ <div class="field"><label>Parol (kamida 6 belgi)</label><input id="r-pass" type="password"></div>
+ <div class="field"><label>Parolni tasdiqlang</label><input id="r-pass2" type="password"></div>
+ <div id="err" style="color:#dc2626;font-size:13px;min-height:18px;margin-bottom:8px"></div>
+ <button class="btn primary" onclick="doReg()" style="width:100%;justify-content:center">Ro‘yxatdan o‘tish</button>
+ <p class="sub" style="text-align:center;margin-top:16px">Hisobingiz bormi? <a href="#" onclick="showLogin(event)" style="color:var(--accent);font-weight:600">Kirish</a></p>`;
+}
+function showLogin(e){ e.preventDefault(); route(); }
+function doReg(){
+ const n=$('#r-ism').value.trim(), f=$('#r-fam').value.trim(), s=$('#r-sinf').value;
+ const em=$('#r-email').value.trim(), p=$('#r-pass').value, p2=$('#r-pass2').value;
+ if(!n||!f) return err('Ism va familiyani kiriting');
+ if(!/^\S+@\S+\.\S+$/.test(em)) return err('Email noto‘g‘ri');
+ if(p.length<6) return err('Parol kamida 6 belgi bo‘lsin');
+ if(p!==p2) return err('Parollar mos emas');
+ USER={name:n, fam:f, cls:s, email:em, pass:p};
+ location.hash='dashboard'; route();
+}
+function doLogin(){
+ const em=$('#l-email').value.trim(), p=$('#l-pass').value;
+ if(!USER) return err('Avval ro‘yxatdan o‘ting');
+ if(em!==USER.email || p!==USER.pass) return err('Email yoki parol noto‘g‘ri');
+ location.hash='dashboard'; route();
+}
+function tabOn(el){ el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); el.classList.add('on'); }
+function hw(el){ const ok=el.classList.toggle('ok'); el.textContent=ok?'Bajarildi':'Kutilmoqda'; }
+function sendAI(){
+ const i=$('#ai-in'); const t=i.value.trim(); if(!t) return;
+ const row=i.parentElement, box=row.parentElement;
+ const u=document.createElement('div'); u.style.cssText='align-self:flex-end;background:var(--accent);color:#fff;padding:12px 14px;border-radius:14px;max-width:80%;font-size:14px'; u.textContent=t;
+ const a=document.createElement('div'); a.style.cssText='align-self:flex-start;background:var(--surface);padding:12px 14px;border-radius:14px;max-width:80%;font-size:14px'; a.textContent='Qabul qilindi. Avval shartni yozing, so‘ng noma’lumni ajrating va qadamlarni birma-bir bajaring.';
+ box.insertBefore(u,row); box.insertBefore(a,row); i.value='';
+}
+const DICT={knowledge:['bilim, malaka','/ˈnɒlɪdʒ/'],book:['kitob','/bʊk/'],school:['maktab','/skuːl/'],time:['vaqt','/taɪm/']};
+function dictSearch(v){
+ const k=v.trim().toLowerCase(); const r=DICT[k];
+ $('#dres').innerHTML = r ? `<div class="stat-ic" style="margin:0">${ic('dict')}</div><div><strong>${k}</strong><div class="sub">${r[0]} · ${r[1]}</div></div>` : `<div class="sub">So‘z topilmadi</div>`;
+}
+let ex='';
+function calcKey(b){
+ const d=$('#calc-d');
+ if(b==='='){ try{ ex=String(Function('return '+ex.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-'))()); }catch(e){ ex='Xato'; } }
+ else ex+=b;
+ d.textContent=ex||'0';
+}
+function closeSide(){ $('#side').classList.remove('open'); }
+function doReg(){
+  const u=$('#r-user').value.trim().toLowerCase(), n=$('#r-ism').value.trim(), f=$('#r-fam').value.trim(), s=$('#r-sinf').value;
+  const em=$('#r-email').value.trim(), p=$('#r-pass').value, p2=$('#r-pass2').value;
+  if(!u) return err('Username kiriting');
+  if(USERS.some(x=>x.username===u)) return err('Bu username band');
+  if(!n||!f) return err('Ism va familiyani kiriting');
+  if(!/^\S+@\S+\.\S+$/.test(em)) return err('Email noto‘g‘ri');
+  if(p.length<6) return err('Parol kamida 6 belgi bo‘lsin');
+  if(p!==p2) return err('Parollar mos emas');
+  USER={username:u, name:n, fam:f, cls:s, email:em, pass:p, role:'student'};
+  USERS.push(USER);
+  location.hash='dashboard'; route();
+}
+function doLogin(){
+  const id=$('#l-email').value.trim().toLowerCase(), p=$('#l-pass').value;
+  const u=USERS.find(x=>(x.username===id || x.email.toLowerCase()===id) && x.pass===p);
+  if(!u) return err('Login yoki parol noto‘g‘ri');
+  USER=u; location.hash = u.role==='dev' ? 'admin' : 'dashboard'; route();
+}
+USERS = USERS.filter(u => u.role === 'dev');
+const SUBJECTS = ['Matematika','Ona tili','Ingliz tili','Tarix','Informatika','Biologiya','Fizika','Kimyo'];
+const BANK = {
+ 'Matematika':[{q:'2x + 6 = 14 bo‘lsa, x nechaga teng?',o:['3','4','5','6'],a:1},{q:'5 ning kvadrati nechaga teng?',o:['10','20','25','30'],a:2}],
+ 'Ona tili':[{q:'Quyidagilardan qaysi biri ot?',o:['yugurmoq','kitob','chiroyli','tez'],a:1},{q:'Gap oxiri qaysi belgi bilan tugaydi?',o:['vergul','nuqta','so‘roq','tire'],a:1}],
+ 'Ingliz tili':[{q:'“Book” so‘zining o‘zbekcha tarjimasi?',o:['qalam','kitob','daftar','stol'],a:1},{q:'“I ___ a student.” bo‘sh joyga nima qo‘yiladi?',o:['am','is','are','be'],a:0}],
+ 'Tarix':[{q:'Amir Temur qachon tug‘ilgan?',o:['1336','1405','1370','1220'],a:0},{q:'O‘zbekiston mustaqilligi yili?',o:['1990','1991','1992','1989'],a:1}],
+ 'Informatika':[{q:'Ikkilik sanoqda 1010 qaysi songa teng?',o:['8','10','12','14'],a:1},{q:'RAM nima uchun?',o:['doimiy saqlash','vaqtinchalik xotira','chizish','tarmoq'],a:1}],
+ 'Biologiya':[{q:'Fotosintez qaysi organoidda sodir bo‘ladi?',o:['yadro','xloroplast','mitoxondriya','ribosoma'],a:1},{q:'Odam yuragi nechta kamerali?',o:['2','3','4','5'],a:2}],
+ 'Fizika':[{q:'Yorug‘likning vakuumdagi tezligi?',o:['3·10⁵ km/s','3·10⁸ m/s','3·10³ m/s','3·10⁶ m/s'],a:1},{q:'Kuch birligi?',o:['Joul','Vatt','Nyuton','Paskal'],a:2}],
+ 'Kimyo':[{q:'Suvning kimyoviy formulasi?',o:['CO₂','H₂O','NaCl','O₂'],a:1},{q:'Eng yengil element?',o:['geliy','vodorod','kislorod','litiy'],a:1}]
+};
+let DAILY = {done:false, nextAt:0};
+let QZ = [], quizEnd = 0, quizKind = '', quizTitle = '', qTimer = null;
+function fmt(ms){ const s=Math.max(0,Math.floor(ms/1000)); const p=n=>String(n).padStart(2,'0'); return p(Math.floor(s/3600))+':'+p(Math.floor(s%3600/60))+':'+p(s%60); }
+function nextMidnight(){ const d=new Date(); d.setHours(24,0,0,0); return d.getTime(); }
+function dailyOpen(){ if(DAILY.done && Date.now()>=DAILY.nextAt) DAILY.done=false; return !DAILY.done; }
+function startQuiz(kind, subj){
+ quizKind = kind;
+ quizTitle = kind==='daily' ? 'Kunlik test' : subj;
+ QZ = kind==='daily' ? [BANK['Matematika'][0], BANK['Fizika'][0], BANK['Informatika'][0]] : BANK[subj];
+ qi = 0; score = 0; quizEnd = Date.now() + QZ.length*90000;
+ route();
+}
+function finishQuiz(){
+ if(quizKind==='daily'){ DAILY.done=true; DAILY.nextAt=nextMidnight(); }
+ qi = QZ.length; route();
+}
+function exitQuiz(){ QZ=[]; qi=0; score=0; route(); }
+function tick(){
+ if(QZ.length && qi<QZ.length){ const e=$('#qt'); const left=quizEnd-Date.now(); if(left<=0) finishQuiz(); else if(e) e.textContent=fmt(left); }
+ const c=$('#cd');
+ if(c){ if(DAILY.done && Date.now()>=DAILY.nextAt) route(); else c.textContent=fmt(DAILY.nextAt-Date.now()); }
+}
+setInterval(tick, 1000);
+function answer(i){
+ const c=QZ[qi];
+ document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+ $('#o'+c.a).classList.add('correct');
+ if(i!==c.a) $('#o'+i).classList.add('wrong'); else score++;
+ $('#next').innerHTML = `<button class="btn primary" onclick="nextQ()">${qi+1<QZ.length?'Keyingi savol':'Yakunlash'}</button>`;
+}
+function nextQ(){ qi++; if(qi>=QZ.length) finishQuiz(); else route(); }
+pages.tests = () => {
+ if(QZ.length && qi>=QZ.length){
+  return `${head('Natija', quizTitle)}<div class="card center-card" style="text-align:center;margin:20px auto">
+   <div class="stat-ic" style="margin:0 auto 14px;width:56px;height:56px">${ic('trophy',28)}</div>
+   <div class="stat-val">${score} / ${QZ.length}</div>
+   <p class="sub" style="margin:8px 0 20px">+${score*20} XP</p>
+   <button class="btn primary" onclick="exitQuiz()">Testlarga qaytish</button></div>`;
+ }
+ if(QZ.length){
+  const c=QZ[qi];
+  return `${head(quizTitle, `Savol ${qi+1} / ${QZ.length}`, `<span class="pill" style="font-variant-numeric:tabular-nums">${ic('clock')} <span id="qt">${fmt(quizEnd-Date.now())}</span></span>`)}
+  <div class="bar" style="margin-bottom:22px"><span style="width:${(qi/QZ.length)*100}%"></span></div>
+  <div class="card" style="max-width:640px"><h2 style="font-size:19px;margin-bottom:18px">${c.q}</h2>${c.o.map((o,i)=>`<button class="opt" id="o${i}" onclick="answer(${i})">${o}</button>`).join('')}<div id="next" style="margin-top:10px"></div></div>`;
+ }
+ dailyOpen();
+ return `${head('Testlar','Kunlik va fan bo‘yicha testlar')}
+  <div class="card" style="margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+   <div class="stat-ic" style="margin:0">${ic('clock')}</div>
+   <div class="grow" style="min-width:200px">
+    <h2 style="margin:0">Kunlik test</h2>
+    <p class="sub">${DAILY.done ? 'Bugungi test topshirildi. Keyingi test ochiladi:' : 'Bugungi test ochiq — 3 savol'}</p>
+    ${DAILY.done ? `<div id="cd" style="font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:6px">${fmt(DAILY.nextAt-Date.now())}</div>` : ''}
+   </div>
+   ${DAILY.done ? '<span class="pill">Yopiq</span>' : `<button class="btn primary" onclick="startQuiz('daily')">${ic('play')} Boshlash</button>`}
+  </div>
+  <h2>Fanlar bo‘yicha</h2>
+  <div class="grid">${SUBJECTS.map(s=>`<div class="card" style="cursor:pointer" onclick="startQuiz('subject','${s}')"><div class="stat-ic">${ic('test')}</div><h2 style="margin-bottom:4px">${s}</h2><p class="sub">${BANK[s].length} ta savol</p></div>`).join('')}</div>`;
+};
+let ADM = {tab:'users', eu:-1, sub:'Matematika', eq:-1};
+let ANN = [{t:'Xush kelibsiz!', d:'KuestoSchool platformasiga xush kelibsiz.'}];
+function admTab(k){ ADM.tab=k; ADM.eu=-1; ADM.eq=-1; route(); }
+function usersTab(){
+ if(ADM.eu>=0){
+  const u=USERS[ADM.eu];
+  return `<div class="card" style="max-width:600px"><h2>Tahrirlash: @${u.username}</h2>
+   ${[['a-name','Ism',u.name],['a-fam','Familiya',u.fam],['a-user','Username',u.username],['a-email','Email',u.email],['a-cls','Sinf',u.cls],['a-lvl','Level',u.level??0],['a-xp','XP',u.xp??0],['a-pass','Parol',u.pass]].map(([id,l,v])=>`<div class="field"><label>${l}</label><input id="${id}" value="${v}"></div>`).join('')}
+   <div style="display:flex;gap:8px"><button class="btn primary" onclick="saveUser()">Saqlash</button><button class="btn" onclick="admTab('users')">Bekor</button></div></div>`;
+ }
+ return `<div class="card">${USERS.map((u,i)=>`<div class="row"><div class="avatar">${u.name[0]}</div><div class="grow"><div style="font-size:14px">${u.name} ${u.fam}</div><div class="sub" style="font-size:12px">@${u.username} · ${u.cls} · Level ${u.level??0} · ${u.xp??0} XP</div></div><button class="btn" onclick="ADM.eu=${i};route()">${ic('gear')} Tahrir</button>${u.role!=='dev'?`<button class="btn" onclick="delUser(${i})">${ic('x')}</button>`:''}</div>`).join('')}</div>`;
+}
+function saveUser(){
+ const u=USERS[ADM.eu];
+ u.name=$('#a-name').value.trim()||u.name; u.fam=$('#a-fam').value.trim()||u.fam;
+ u.username=$('#a-user').value.trim().toLowerCase()||u.username; u.email=$('#a-email').value.trim()||u.email;
+ u.cls=$('#a-cls').value.trim()||u.cls; u.level=parseInt($('#a-lvl').value)||0; u.xp=parseInt($('#a-xp').value)||0;
+ u.pass=$('#a-pass').value||u.pass;
+ ADM.eu=-1; route(); toast('Saqlandi');
+}
+function delUser(i){ USERS.splice(i,1); route(); toast('Akkaunt o‘chirildi'); }
+function bankTab(){
+ const list=BANK[ADM.sub];
+ if(ADM.eq!==-1){
+  const c = ADM.eq===-2 ? {q:'', o:['','','',''], a:0} : list[ADM.eq];
+  return `<div class="card" style="max-width:640px"><h2>${ADM.eq===-2?'Yangi savol':'Savolni tahrirlash'} · ${ADM.sub}</h2>
+   <div class="field"><label>Savol</label><input id="q-text" value="${c.q}"></div>
+   ${[0,1,2,3].map(i=>`<div class="field"><label>Variant ${i+1}</label><input id="q-o${i}" value="${c.o[i]??''}"></div>`).join('')}
+   <div class="field"><label>To‘g‘ri javob</label><select id="q-a">${[0,1,2,3].map(i=>`<option value="${i}" ${c.a===i?'selected':''}>${i+1}-variant</option>`).join('')}</select></div>
+   <div style="display:flex;gap:8px"><button class="btn primary" onclick="saveQ()">Saqlash</button><button class="btn" onclick="ADM.eq=-1;route()">Bekor</button></div></div>`;
+ }
+ return `<div class="tabs">${SUBJECTS.map(s=>`<button class="${s===ADM.sub?'on':''}" onclick="ADM.sub='${s}';ADM.eq=-1;route()">${s}</button>`).join('')}</div>
+  <div class="card">${list.map((c,i)=>`<div class="row"><div class="grow"><div style="font-size:14px">${c.q}</div><div class="sub" style="font-size:12px">To‘g‘ri: ${c.o[c.a]}</div></div><button class="btn" onclick="ADM.eq=${i};route()">${ic('gear')}</button><button class="btn" onclick="delQ(${i})">${ic('x')}</button></div>`).join('')}
+  <div style="margin-top:14px"><button class="btn primary" onclick="ADM.eq=-2;route()">${ic('plus')} Savol qo‘shish</button></div></div>`;
+}
+function saveQ(){
+ const arr=BANK[ADM.sub];
+ const obj={q:$('#q-text').value.trim(), o:[0,1,2,3].map(i=>$('#q-o'+i).value.trim()), a:parseInt($('#q-a').value)};
+ if(!obj.q || obj.o.some(x=>!x)) return toast('Barcha maydonlarni to‘ldiring');
+ if(ADM.eq===-2) arr.push(obj); else arr[ADM.eq]=obj;
+ ADM.eq=-1; route(); toast('Saqlandi');
+}
+function delQ(i){ BANK[ADM.sub].splice(i,1); route(); }
+function dailyTab(){
+ return `<div class="card"><h2>Kunlik test holati</h2><p class="sub" style="margin-bottom:14px">${DAILY.done ? 'Yopiq — keyingi ochilish: '+fmt(DAILY.nextAt-Date.now()) : 'Ochiq'}</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" onclick="DAILY.done=false;route()">Ochish</button><button class="btn" onclick="DAILY.done=true;DAILY.nextAt=nextMidnight();route()">Yopish</button></div></div>`;
+}
+function addAnn(){
+ const t=$('#an-t').value.trim(); if(!t) return toast('Sarlavha kiriting');
+ ANN.unshift({t, d:$('#an-d').value.trim()}); route(); toast('E’lon joylandi');
+}
+function annTab(){
+ return `<div class="card">${ANN.map((a,i)=>`<div class="row"><div class="grow"><div style="font-size:14px">${a.t}</div><div class="sub" style="font-size:12px">${a.d}</div></div><button class="btn" onclick="ANN.splice(${i},1);route()">${ic('x')}</button></div>`).join('')}
+  <div class="field" style="margin-top:14px"><label>Sarlavha</label><input id="an-t"></div><div class="field"><label>Matn</label><input id="an-d"></div>
+  <button class="btn primary" onclick="addAnn()">${ic('bell')} E’lon joylash</button></div>`;
+}
+pages.admin = () => {
+ if(!USER || USER.role!=='dev') return head('Ruxsat yo‘q','Bu bo‘lim faqat dasturchi uchun');
+ const t=ADM.tab;
+ return `${head('Developer panel','Hammasini tahrirlash')}
+  <div class="tabs">${[['users','Foydalanuvchilar'],['bank','Savollar'],['daily','Kunlik test'],['ann','E’lonlar']].map(([k,l])=>`<button class="${t===k?'on':''}" onclick="admTab('${k}')">${l}</button>`).join('')}</div>
+  ${t==='users'?usersTab():t==='bank'?bankTab():t==='daily'?dailyTab():annTab()}`;
+};
+const CONTENT = {brand:'KuestoSchool', heroTitle:'Bilim bellashuvi — bir joyda', heroSub:'Testlar, reyting, XP va turnirlar. Har kuni yangi vazifa, har hafta yangi chempion.', loginTitle:'Kirish'};
+let DONE = {};
+let ADM_TABS = [['users','Foydalanuvchilar'],['bank','Savollar'],['daily','Testlar'],['site','Sayt matnlari'],['ann','E’lonlar']];
+function dayKey(){ const d=new Date(); return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())/86400000); }
+function todaySet(s){ const b=BANK[s]; const n=Math.min(2,b.length); const start=dayKey()%b.length; const out=[]; for(let i=0;i<n;i++) out.push(b[(start+i)%b.length]); return out; }
+function startQuiz(subj){ quizTitle=subj; QZ=todaySet(subj); qi=0; score=0; quizEnd=Date.now()+QZ.length*90000; route(); }
+function finishQuiz(){ if(quizTitle && QZ.length) DONE[quizTitle]=dayKey(); qi=QZ.length; route(); }
+function applyContent(){ const l=document.querySelector('.logo'); if(l && l.lastChild) l.lastChild.textContent=CONTENT.brand; const s=document.querySelector('.mobile-bar strong'); if(s) s.textContent=CONTENT.brand; document.title=CONTENT.brand; }
+let lastDay = dayKey();
+function tick2(){
+ const c=$('#cd2'); if(c) c.textContent=fmt(nextMidnight()-Date.now());
+ if(dayKey()!==lastDay){ lastDay=dayKey(); if(!QZ.length) route(); }
+ applyContent();
+}
+setInterval(tick2, 1000);
+pages.tests = () => {
+ if(QZ.length && qi>=QZ.length){
+  return `${head('Natija', quizTitle)}<div class="card center-card" style="text-align:center;margin:20px auto">
+   <div class="stat-ic" style="margin:0 auto 14px;width:56px;height:56px">${ic('trophy',28)}</div>
+   <div class="stat-val">${score} / ${QZ.length}</div>
+   <p class="sub" style="margin:8px 0 20px">+${score*20} XP</p>
+   <button class="btn primary" onclick="exitQuiz()">Testlarga qaytish</button></div>`;
+ }
+ if(QZ.length){
+  const c=QZ[qi];
+  return `${head(quizTitle, `Savol ${qi+1} / ${QZ.length}`, `<span class="pill" style="font-variant-numeric:tabular-nums">${ic('clock')} <span id="qt">${fmt(quizEnd-Date.now())}</span></span>`)}
+  <div class="bar" style="margin-bottom:22px"><span style="width:${(qi/QZ.length)*100}%"></span></div>
+  <div class="card" style="max-width:640px"><h2 style="font-size:19px;margin-bottom:18px">${c.q}</h2>${c.o.map((o,i)=>`<button class="opt" id="o${i}" onclick="answer(${i})">${o}</button>`).join('')}<div id="next" style="margin-top:10px"></div></div>`;
+ }
+ const k=dayKey();
+ return `${head('Testlar','Har bir fan bo‘yicha kunlik test', `<span class="pill" style="font-variant-numeric:tabular-nums">${ic('clock')} <span id="cd2">${fmt(nextMidnight()-Date.now())}</span></span>`)}
+  <p class="sub" style="margin-bottom:16px">Keyingi kun testlar almashadi. Qolgan vaqt yuqorida ko‘rsatilgan.</p>
+  <div class="grid">${SUBJECTS.map(s=>{ const done=DONE[s]===k; return `<div class="card" style="${done?'':'cursor:pointer'}" ${done?'':`onclick="startQuiz('${s}')"`}><div class="stat-ic">${ic('test')}</div><h2 style="margin-bottom:4px">${s}</h2><p class="sub">${done?'Bugun topshirildi':todaySet(s).length+' ta savol · bugungi test'}</p>${done?'<span class="pill ok">Bajarildi</span>':'<span class="tag">Boshlash</span>'}</div>`; }).join('')}</div>`;
+};
+pages.ranking = () => {
+ const list=USERS.slice().sort((a,b)=>(b.xp??0)-(a.xp??0));
+ return `${head('Reyting','Barcha o‘quvchilar XP bo‘yicha')}` + (list.length ? `<div class="card">${list.map((u,i)=>`<div class="row"><span class="rank">${i+1}</span><div class="avatar">${u.name[0]}</div><div class="grow">${u.name} ${u.fam}<div class="sub" style="font-size:12px">${u.cls}</div></div><span class="pill">${ic('bolt',14)} ${u.xp??0} XP</span></div>`).join('')}</div>` : `<div class="card"><p class="sub">Hozircha reyting bo‘sh.</p></div>`);
+};
+function testsTab(){
+ const k=dayKey();
+ return `<div class="card"><h2>Kunlik testlar</h2><p class="sub" style="margin:6px 0 14px">Har bir fan uchun bugungi test. Kun o‘tgach savollar almashadi.</p>${SUBJECTS.map(s=>`<div class="row"><div class="grow">${s}<div class="sub" style="font-size:12px">${DONE[s]===k?'Bugun topshirilgan':'Ochiq'}</div></div><button class="btn" onclick="DONE['${s}']=0;route()">Qayta ochish</button></div>`).join('')}<div style="margin-top:14px"><button class="btn primary" onclick="DONE={};route();toast('Barcha testlar ochildi')">Hammasini qayta ochish</button></div></div>`;
+}
+function siteTab(){
+ return `<div class="card" style="max-width:640px"><h2>Asosiy matnlar</h2>
+  ${[['s-brand','Sayt nomi',CONTENT.brand],['s-hero','Bosh sahifa sarlavhasi',CONTENT.heroTitle],['s-sub','Bosh sahifa matni',CONTENT.heroSub],['s-login','Kirish sarlavhasi',CONTENT.loginTitle]].map(([id,l,v])=>`<div class="field"><label>${l}</label><input id="${id}" value="${v}"></div>`).join('')}
+  <h2 style="margin-top:20px">Menyu nomlari</h2>
+  ${PAGES.map((p,i)=>p.id?`<div class="field"><label>${p.id}</label><input id="s-p${i}" value="${p.t}"></div>`:'').join('')}
+  <button class="btn primary" onclick="saveSite()">Saqlash</button></div>`;
+}
+function saveSite(){
+ CONTENT.brand=$('#s-brand').value.trim()||CONTENT.brand;
+ CONTENT.heroTitle=$('#s-hero').value.trim()||CONTENT.heroTitle;
+ CONTENT.heroSub=$('#s-sub').value.trim();
+ CONTENT.loginTitle=$('#s-login').value.trim()||CONTENT.loginTitle;
+ PAGES.forEach((p,i)=>{ if(p.id){ const e=$('#s-p'+i); if(e && e.value.trim()) p.t=e.value.trim(); } });
+ route(); toast('Saqlandi');
+}
+pages.admin = () => {
+ if(!USER || USER.role!=='dev') return head('Ruxsat yo‘q','Bu bo‘lim faqat dasturchi uchun');
+ const t=ADM.tab;
+ return `${head('Developer panel','Hammasini tahrirlash')}
+  <div class="tabs">${ADM_TABS.map(([k,l])=>`<button class="${t===k?'on':''}" onclick="admTab('${k}')">${l}</button>`).join('')}</div>
+  ${t==='users'?usersTab():t==='bank'?bankTab():t==='daily'?testsTab():t==='site'?siteTab():annTab()}`;
+};
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
