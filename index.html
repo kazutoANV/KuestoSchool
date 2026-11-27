@@ -261,7 +261,7 @@ const pages = {
  },
 
  ranking: () => {
-  const data=[['Dilnoza R.',2840],['Aziza T.',2450],['Jasur K.',2310],['Malika S.',2180],['Oybek N.',2050],['Sardor M.',1990],['Nodira A.',1875],['Bekzod Q.',1720]];
+  const data=[['Dilnoza R.',2840],['Ayaulim T.',2450],['Jasur K.',2310],['Malika S.',2180],['Oybek N.',2050],['Sardor M.',1990],['Nodira A.',1875],['Bekzod Q.',1720]];
   return `${head('Reyting','Haftalik TOP 10',`<div class="tabs" style="margin:0"><button class="on" onclick="tabOn(this)">Hafta</button><button onclick="tabOn(this)">Oy</button><button onclick="tabOn(this)">Maktab</button></div>`)}
   <div class="card">${data.map(([n,x],i)=>`<div class="row"><span class="rank">${i+1}</span><div class="avatar">${n[0]}</div><div class="grow">${n}</div><span class="pill">${ic('bolt',14)} ${x} XP</span></div>`).join('')}</div>`;
  },
@@ -307,7 +307,7 @@ const pages = {
 
  teacher: () => `${head('O‘qituvchi kabineti','9-A sinf',`<button class="btn primary" onclick="toast('Yangi test yaratish oynasi ochildi')">${ic('plus')} Test yaratish</button>`)}
   <div class="grid" style="margin-bottom:20px">${statCard('family','O‘quvchilar','28')}${statCard('test','Faol testlar','3')}${statCard('task','Vazifalar','5')}</div>
-  <div class="card"><h2>So‘nggi natijalar</h2>${[['Aziza T.',95],['Jasur K.',82],['Malika S.',68]].map(([n,v])=>`<div class="row"><div class="avatar">${n[0]}</div><div class="grow">${n}</div><div style="width:140px"><div class="bar" style="margin:0"><span style="width:${v}%"></span></div></div><span class="sub" style="width:40px;text-align:right">${v}%</span></div>`).join('')}</div>`,
+  <div class="card"><h2>So‘nggi natijalar</h2>${[['Ayaulim T.',95],['Jasur K.',82],['Malika S.',68]].map(([n,v])=>`<div class="row"><div class="avatar">${n[0]}</div><div class="grow">${n}</div><div style="width:140px"><div class="bar" style="margin:0"><span style="width:${v}%"></span></div></div><span class="sub" style="width:40px;text-align:right">${v}%</span></div>`).join('')}</div>`,
 
  admin: () => (!USER || USER.role!=='dev') ? `${head('Ruxsat yo‘q','Bu bo‘lim faqat dasturchi akkaunti uchun')}` : `${head('Developer panel','Platforma boshqaruvi · Aslbek Karimov')}
   <div class="grid" style="margin-bottom:20px">${statCard('family','O‘quvchilar','1 240')}${statCard('teacher','O‘qituvchilar','64')}${statCard('test','Testlar','318')}${statCard('chart','Faol bugun','612')}</div>
@@ -315,7 +315,7 @@ const pages = {
 
  settings: () => `${head('Sozlamalar','Profil va ko‘rinish')}
   <div class="card" style="max-width:560px">
-   <div class="field"><label>Ism</label><input value="Aziza Tursunova"></div>
+   <div class="field"><label>Ism</label><input value="Ayaulim Tursunova"></div>
    <div class="field"><label>Sinf</label><select><option>9-A</option><option>9-B</option></select></div>
    <div class="row" style="border:0"><div class="grow">Dark mode</div><button class="btn" onclick="toggleTheme()">${ic('moon')} O‘zgartirish</button></div>
    <div class="row" style="border:0"><div class="grow">Bildirishnomalar</div><span class="pill ok" style="cursor:pointer" onclick="this.classList.toggle('ok');this.textContent=this.classList.contains('ok')?'Yoqilgan':'O‘chirilgan'">Yoqilgan</span></div>
@@ -865,7 +865,7 @@ function regStepHtml(){
   b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
   <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
  } else if(REG.step===2){
-  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: ayaulim_07"></div>
   <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
   <div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>`;
  } else if(REG.step===3){
@@ -952,7 +952,7 @@ function regStepHtml(){
   b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
   <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
  } else if(REG.step===2){
-  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: ayaulim_07"></div>
   <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
   <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
   <div class="field"><label>${ic('friend',16)} Do‘st kodi</label><input id="r-friend" value="${REG.friend}" placeholder="Kod yoki username"></div></div>`;
@@ -1050,7 +1050,7 @@ function regStepHtml(){
   b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
   <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
  } else if(REG.step===2){
-  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: ayaulim_07"></div>
   <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
   <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
   <div class="field"><label>${ic('friend',16)} Do‘stingiz username</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div></div>
@@ -1220,7 +1220,7 @@ function regStepHtml(){
   b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
   <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
  } else if(REG.step===2){
-  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: ayaulim_07"></div>
   <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
   <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
   <div class="field"><label>${ic('friend',16)} Do‘stingiz username</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div></div>
@@ -1318,9 +1318,9 @@ function regStepHtml(){
  let b='';
  if(REG.step===1){
   b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
-  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}" placeholder="Masalan: Aziza"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}" placeholder="Masalan: Karimova"></div></div>`;
+  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}" placeholder="Masalan: Ayaulim"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}" placeholder="Masalan: Karimova"></div></div>`;
  } else if(REG.step===2){
-  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: ayaulim_07"></div>
   <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
   <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
   <div class="field"><label>${ic('friend',16)} Do\u2018stingizning username\u2019i</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div></div>
@@ -1339,6 +1339,650 @@ function regStepHtml(){
  const label = REG.step===4 ? 'Ro\u2018yxatdan o\u2018tish' : 'Davom etish';
  return prog + b + `<div id="err" class="err"></div><div class="navrow">${back}<button class="btn-main" onclick="regNext()">${label} ${ic('play',16)}</button></div>`;
 }
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(USERS)); localStorage.setItem('kuesto_tc_v1', JSON.stringify(TCODES)); }catch(e){} }
+let TCODES = [];
+try{ const t=localStorage.getItem('kuesto_tc_v1'); if(t) TCODES=JSON.parse(t)||[]; }catch(e){}
+function genAlnum(n){ const c='ABCDEFGHJKLMNPQRSTUVWXYZ0123456789'; let s=''; for(let i=0;i<n;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
+function ensureSocial(u){
+ if(!u.invites) u.invites=Array.from({length:20},()=>({code:genCode(), used:false, by:null}));
+ if(!u.friends) u.friends=[];
+ if(!u.notifs) u.notifs=[];
+ if(!u.pcode) u.pcode=String(100000+Math.floor(Math.random()*900000));
+ if(u.xp==null) u.xp=0;
+ if(!u.hist) u.hist=[];
+ if(!u.children) u.children=[];
+ if(!u.role) u.role='student';
+}
+function roleLabel(u){ return u.role==='dev'?'Dasturchi':u.role==='parent'?'Ota-ona':u.role==='teacher'?'O‘qituvchi':(u.cls||'O‘quvchi')+' sinf'; }
+function acceptInvite(raw){
+ const c=(raw||'').trim().toUpperCase();
+ if(!USER) return;
+ if(!c) return toast('Kodni kiriting');
+ let owner=null, inv=null;
+ for(const o of USERS){ const f=(o.invites||[]).find(i=>i.code===c); if(f){ owner=o; inv=f; break; } }
+ if(!owner) return toast('Bunday kod topilmadi');
+ if(inv.used) return toast('Bu kod allaqachon ishlatilgan');
+ if(owner===USER) return toast('O‘zingizning kodingizni ishlatib bo‘lmaydi');
+ if(USER.friends.includes(owner.username)) return toast('Bu do‘st allaqachon ro‘yxatda');
+ inv.used=true; inv.by=USER.username;
+ owner.friends.push(USER.username); USER.friends.push(owner.username);
+ owner.notifs.push({type:'friend', t:'Do‘stlik qabul qilindi', d:`@${USER.username} (${USER.name} ${USER.fam}) sizning taklif kodingiz orqali do‘st bo‘ldi`, time:new Date().toLocaleString('uz-UZ'), read:false});
+ toast(owner.name+' bilan do‘st bo‘ldingiz!'); route();
+}
+function finishQuiz(){
+ if(quizTitle && QZ.length){
+  DONE[quizTitle]=dayKey();
+  if(USER){
+   const gained=score*20;
+   USER.xp=(USER.xp||0)+gained;
+   USER.tests=(USER.tests||0)+1;
+   (USER.hist=USER.hist||[]).push({t:quizTitle, s:score, n:QZ.length, xp:gained, d:new Date().toLocaleDateString('uz-UZ')});
+   if(score===QZ.length) USER.perfect=true;
+  }
+ }
+ qi=QZ.length; route();
+}
+function avgPct(){ const h=USER.hist||[]; if(!h.length) return 0; return Math.round(h.reduce((a,x)=>a+x.s/x.n,0)/h.length*100); }
+function subjPct(s){ const h=(USER.hist||[]).filter(x=>x.t===s); if(!h.length) return 0; return Math.round(h.reduce((a,x)=>a+x.s/x.n,0)/h.length*100); }
+function userRank(){ const arr=USERS.filter(x=>x.role==='student').slice().sort((a,b)=>(b.xp||0)-(a.xp||0)); const i=arr.indexOf(USER); return i<0?'—':'#'+(i+1); }
+pages.dashboard = () => {
+ const l=lvl(); const xp=USER.xp||0;
+ const earned=[(USER.tests||0)>0, !!USER.perfect, xp>=1000].filter(Boolean).length;
+ const hist=(USER.hist||[]).slice().reverse().slice(0,5);
+ return `${head('Salom, '+USER.name+'!', roleLabel(USER)+' · Shaxsiy kabinet')}
+ <div class="hero"><div class="lvl">${l.n}</div><div class="grow" style="min-width:220px"><div style="display:flex;justify-content:space-between;font-size:14px"><strong>Level ${l.n}</strong><span class="sub">Jami: ${xp} XP</span></div><div class="bar"><span style="width:${l.pct}%"></span></div><p class="sub" style="margin-top:8px">Keyingi levelgacha ${l.need-l.cur} XP kerak</p></div></div>
+ <div class="grid" style="margin-bottom:22px">${statCard('chart','O‘zlashtirish', avgPct()+'%')}${statCard('trophy','Sinf reytingi', userRank())}${statCard('test','Testlar', USER.tests||0)}${statCard('medal','Yutuqlar', earned+' / 3')}</div>
+ <div class="grid" style="grid-template-columns:1fr 1fr"><div class="card"><h2>Fanlar bo‘yicha</h2>${SUBJECTS.map(s=>`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${s}</span><span class="sub">${subjPct(s)}%</span></div><div class="bar"><span style="width:${subjPct(s)}%"></span></div></div>`).join('')}</div>
+ <div class="card"><h2>O‘qish tarixi</h2>${hist.length? hist.map(h=>`<div class="row"><div class="stat-ic" style="margin:0">${ic('test')}</div><div class="grow"><div style="font-size:14px">${h.t}</div><div class="sub" style="font-size:12px">${h.d} · ${h.s}/${h.n} · +${h.xp} XP</div></div></div>`).join('') : '<p class="sub">Hali test topshirilmadi.</p>'}</div></div>`;
+};
+pages.home = () => `<div class="hero" style="background:var(--surface)"><div class="grow" style="min-width:260px"><h1 style="font-size:32px">${CONTENT.heroTitle}</h1><p class="sub" style="font-size:15px;max-width:520px">${CONTENT.heroSub}</p><div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary" href="#tests">${ic('play')} Testlarga o‘tish</a><a class="btn" href="#ranking">${ic('trophy')} Reyting</a></div></div></div>
+ <div class="grid" style="margin-bottom:22px">${statCard('family','O‘quvchilar', USERS.filter(u=>u.role==='student').length)}${statCard('teacher','O‘qituvchilar', USERS.filter(u=>u.role==='teacher').length)}${statCard('bolt','Sizning XP', USER.xp||0)}${statCard('test','Bugungi testlar', SUBJECTS.filter(s=>DONE[s]===dayKey()).length+' / '+SUBJECTS.length)}</div>
+ <div class="card"><h2>So‘nggi e’lonlar</h2>${ANN.length ? ANN.slice(0,4).map(a=>`<div class="row"><div class="stat-ic" style="margin:0">${ic('bell')}</div><div class="grow"><div style="font-size:14px;font-weight:600">${a.t}</div><div class="sub" style="font-size:13px">${a.d}</div></div></div>`).join('') : '<p class="sub">Hozircha e’lon yo‘q.</p>'}</div>`;
+pages.achievements = () => {
+ const list=[['flame','7 kunlik streak',false],['star','Birinchi test',(USER.tests||0)>0],['trophy','Sinf chempioni',userRank()==='#1'],['bolt','1000 XP',(USER.xp||0)>=1000],['check','Mukammal natija',!!USER.perfect],['medal','Turnir g‘olibi',false]];
+ const got=list.filter(x=>x[2]).length;
+ return `${head('Yutuqlar', got+' / '+list.length+' olingan')}<div class="grid">${list.map(([i,t,ok])=>`<div class="card" style="${ok?'':'opacity:.55'}"><div class="stat-ic">${ic(i)}</div><h2 style="margin:0">${t}</h2><p class="sub" style="margin-top:6px">${ok?'Olingan':'Hali olinmagan'}</p></div>`).join('')}</div>`;
+};
+const LIB = [
+ {t:'Matematika 9 — Kvadrat tenglama', c:'#2563eb', x:'Kvadrat tenglama ax² + bx + c = 0 ko‘rinishida bo‘ladi.\n\nDiskriminant D = b² − 4ac orqali ildizlar soni aniqlanadi:\n• D > 0 bo‘lsa, ikkita ildiz bor;\n• D = 0 bo‘lsa, bitta ildiz bor;\n• D < 0 bo‘lsa, haqiqiy ildiz yo‘q.'},
+ {t:'Fizika 9 — Kinematika', c:'#16a34a', x:'Tekis harakatda tezlik v = s / t formulasi bilan topiladi.\n\nTekis tezlanuvchan harakatda:\n• tezlik: v = v0 + at;\n• bosib o‘tilgan yo‘l: s = v0·t + at²/2.'},
+ {t:'Ona tili 9 — Gap bo‘laklari', c:'#dc2626', x:'Gapning asosiy bo‘laklari — ega va kesim.\n\nEga ish-harakatni bajaruvchini, kesim esa ish-harakatni bildiradi.\n\nIkkinchi darajali bo‘laklar: to‘ldiruvchi, aniqlovchi va hol.'},
+ {t:'Ingliz tili B1 — Present Perfect', c:'#7c3aed', x:'Present Perfect: have / has + V3 (3-shakl).\n\nNatijasi hozir muhim bo‘lgan yoki o‘tmishda boshlanib hozirgacha davom etayotgan harakat uchun ishlatiladi.\n\nMasalan: I have finished my homework.'},
+ {t:'Tarix — Amir Temur davri', c:'#b45309', x:'Amir Temur 1370-yilda Movarounnahrda davlat asos solgan va poytaxtini Samarqandga ko‘chirgan.\n\nUning davrida savdo yo‘llari rivojlandi va me’morchilik gullab-yashnadi.'},
+ {t:'Biologiya — Fotosintez', c:'#0d9488', x:'Fotosintez o‘simlik barglaridagi xloroplastlarda quyosh nuri ta’sirida sodir bo‘ladi.\n\nNatijada karbonat angidrid va suvdan glyukoza hamda kislorod hosil bo‘ladi.'}
+];
+let LIB_OPEN = -1;
+function libOpen(i){ LIB_OPEN=i; route(); }
+function libBack(){ LIB_OPEN=-1; route(); }
+pages.library = () => {
+ if(LIB_OPEN>=0){
+  const b=LIB[LIB_OPEN];
+  return `${head(b.t,'Dars matni')}<div class="card" style="max-width:720px;line-height:1.75;white-space:pre-line;font-size:15px">${b.x}</div><div style="margin-top:14px"><button class="btn" onclick="libBack()">${ic('x')} Yopish</button></div>`;
+ }
+ return `${head('Elektron kutubxona','Darsliklar — o‘qish uchun bosing')}<div class="grid">${LIB.map((b,i)=>`<div class="card" style="cursor:pointer" onclick="libOpen(${i})"><div class="stat-ic" style="background:${b.c};color:#fff">${ic('book')}</div><h2 style="margin-bottom:6px">${b.t}</h2><span class="tag">Dars matni</span></div>`).join('')}</div>`;
+};
+const DICT_LIST = [['book','kitob'],['school','maktab'],['time','vaqt'],['knowledge','bilim'],['student','o‘quvchi'],['teacher','o‘qituvchi'],['friend','do‘st'],['family','oila'],['home','uy'],['house','uy'],['water','suv'],['sun','quyosh'],['moon','oy'],['star','yulduz'],['love','sevgi'],['happy','baxtli'],['sad','qayg‘uli'],['big','katta'],['small','kichik'],['good','yaxshi'],['bad','yomon'],['red','qizil'],['blue','ko‘k'],['green','yashil'],['white','oq'],['black','qora'],['one','bir'],['two','ikki'],['three','uch'],['four','to‘rt'],['five','besh'],['day','kun'],['night','tun'],['year','yil'],['week','hafta'],['morning','ertalab'],['evening','kechqurun'],['city','shahar'],['country','mamlakat'],['world','dunyo'],['computer','kompyuter'],['phone','telefon'],['question','savol'],['answer','javob'],['mathematics','matematika'],['physics','fizika'],['chemistry','kimyo'],['biology','biologiya'],['history','tarix'],['geography','geografiya'],['language','til'],['English','ingliz tili'],['read','o‘qimoq'],['write','yozmoq'],['listen','tinglamoq'],['speak','gapirmoq'],['learn','o‘rganmoq'],['study','o‘qimoq'],['work','ish'],['play','o‘ynamoq'],['eat','yemoq'],['drink','ichmoq'],['sleep','uxlamoq'],['run','yugurmoq'],['go','bormoq'],['come','kelmoq'],['see','ko‘rmoq'],['hear','eshitmoq'],['think','o‘ylamoq'],['know','bilmoq'],['want','xohlamoq'],['need','kerak bo‘lmoq'],['beautiful','chiroyli'],['new','yangi'],['old','eski'],['hard','qiyin'],['easy','oson'],['fast','tez'],['slow','sekin'],['hello','salom'],['thank you','rahmat'],['please','iltimos'],['yes','ha'],['no','yo‘q']];
+function dictFilter(v){
+ const q=(v||'').trim().toLowerCase();
+ const rows=DICT_LIST.filter(([e,u])=>!q || e.toLowerCase().includes(q) || u.toLowerCase().includes(q));
+ const el=$('#dres'); if(!el) return;
+ el.innerHTML = rows.length ? rows.slice(0,80).map(([e,u])=>`<div class="row"><div class="grow"><strong>${e}</strong></div><span class="sub">${u}</span></div>`).join('') : '<p class="sub">Topilmadi</p>';
+}
+pages.dict = () => `${head('Lug‘at','Ingliz–o‘zbek lug‘at')}<div class="card" style="max-width:620px"><div class="field"><label>So‘z (inglizcha yoki o‘zbekcha)</label><input placeholder="masalan: knowledge" oninput="dictFilter(this.value)"></div><div id="dres" style="max-height:420px;overflow:auto"></div></div>`;
+function calcKey(b){
+ if(b==='C'){ CE=''; CR=false; }
+ else if(b==='⌫'){ if(CE==='Xato') CE=''; else CE=CE.slice(0,-1); }
+ else if(b==='='){
+  try{
+   const js = CE.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/\^/g,'**').replace(/%/g,'/100');
+   if(!js || !/^[0-9+\-*\/.() ]+$/.test(js)) throw 0;
+   const r = Function('return ('+js+')')();
+   if(!isFinite(r)) throw 0;
+   CE = String(Math.round(r*1e10)/1e10); CR = true;
+  }catch(e){ CE='Xato'; CR=false; }
+  const d=$('#calc-d'); if(d) d.textContent=CE;
+  return;
+ }
+ else { if(CE==='Xato') CE=''; if(CR && /[0-9.(]/.test(b)) CE=''; CR=false; CE += b; }
+ const d=$('#calc-d');
+ if(d){ d.textContent=CE||'0'; d.style.fontSize = CE.length>12 ? '20px' : '28px'; }
+}
+pages.calc = () => `${head('Kalkulyator','Oddiy va ilmiy hisob-kitob')}
+ <div class="card" style="max-width:340px">
+  <div id="calc-d" style="background:var(--surface);text-align:right;font-size:${CE.length>12?'20px':'28px'};font-weight:600;margin-bottom:12px;padding:16px;border-radius:12px;min-height:72px;overflow:hidden;word-break:break-all">${CE||'0'}</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${['C','⌫','%','÷','(',')','^','×','7','8','9','−','4','5','6','+','1','2','3','0','.'].map(b=>`<button class="btn" style="justify-content:center;padding:14px 0" onclick="calcKey('${b}')">${b}</button>`).join('')}<button class="btn" style="grid-column:span 4;justify-content:center;padding:14px 0;background:var(--accent);color:#fff;border-color:var(--accent)" onclick="calcKey('=')">=</button></div>
+ </div>`;
+function genTC(){ for(let i=0;i<5;i++) TCODES.push({code:genAlnum(16), used:false, by:null}); save(); route(); toast('5 ta o‘qituvchi kodi yaratildi'); }
+function tcodesTab(){
+ return `<div class="card"><h2>O‘qituvchi kodlari</h2><p class="sub" style="margin:6px 0 14px">Har bir kod faqat bir marta ishlatiladi. Kodni o‘qituvchiga bering.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">${TCODES.length? TCODES.map(c=>`<div class="row" style="border:1px solid var(--line);border-radius:10px;padding:10px"><span style="font-weight:700;letter-spacing:.06em;flex:1">${c.code}</span><span class="pill">${c.used?'Ishlatilgan':'Bo‘sh'}</span></div>`).join('') : '<p class="sub">Hozircha kod yo‘q.</p>'}</div>
+  <div style="margin-top:14px"><button class="btn primary" onclick="genTC()">${ic('plus')} 5 ta kod yaratish</button></div></div>`;
+}
+ADM_TABS = [['users','Foydalanuvchilar'],['bank','Savollar'],['daily','Testlar'],['site','Sayt matnlari'],['firebase','Firebase'],['tcodes','O‘qituvchi kodlari'],['ann','E’lonlar']];
+pages.admin = () => {
+ if(!USER || USER.role!=='dev') return head('Ruxsat yo‘q','Bu bo‘lim faqat dasturchi uchun');
+ const t=ADM.tab;
+ return `${head('Developer panel','Hammasini tahrirlash')}
+  <div class="tabs">${ADM_TABS.map(([k,l])=>`<button class="${t===k?'on':''}" onclick="admTab('${k}')">${l}</button>`).join('')}</div>
+  ${t==='users'?usersTab():t==='bank'?bankTab():t==='daily'?testsTab():t==='site'?siteTab():t==='firebase'?firebaseTab():t==='tcodes'?tcodesTab():annTab()}`;
+};
+pages.themes = () => `${head('Mavzular','Sayt ranglarini tanlang')}
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${THEMES.map(t=>{ const on=CUR_THEME===t.id; return `<div class="card" style="cursor:pointer;${on?'border-color:'+t.a+';box-shadow:0 0 0 2px '+t.a:''}" onclick="setTheme('${t.id}')"><div style="display:flex;gap:6px;margin-bottom:12px"><span style="flex:1;height:44px;border-radius:10px;background:${t.a}"></span><span style="flex:1;height:44px;border-radius:10px;background:${t.s};border:1px solid var(--line)"></span></div><div style="display:flex;align-items:center;justify-content:space-between"><h2 style="margin:0">${t.name}</h2>${on?`<span class="pill ok">${ic('check')} Tanlangan</span>`:''}</div><p class="sub" style="margin-top:4px">${on?'Hozir ishlatilmoqda':'Tanlash uchun bosing'}</p></div>`; }).join('')}</div>
+ <div class="card" style="margin-top:18px;max-width:560px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="stat-ic" style="margin:0">${ic('moon')}</div><div class="grow">Tungi rejim</div><button class="btn" onclick="toggleTheme();route()">${document.documentElement.dataset.theme==='dark'?'Yorug‘ rejim':'Tungi rejim'}</button></div>`;
+pages.teacher = () => {
+ if(!(USER.role==='teacher' || USER.role==='dev')) return head('Ruxsat yo‘q','Bu bo‘lim o‘qituvchilar uchun');
+ const st=USERS.filter(u=>u.role==='student').slice().sort((a,b)=>(b.xp||0)-(a.xp||0));
+ const tests=st.reduce((a,u)=>a+(u.tests||0),0);
+ return `${head('O‘qituvchi kabineti', st.length+' ta o‘quvchi')}
+ <div class="grid" style="margin-bottom:20px">${statCard('family','O‘quvchilar', st.length)}${statCard('test','Topshirilgan testlar', tests)}${statCard('bolt','Eng yuqori XP', st[0]?st[0].xp||0:0)}</div>
+ <div class="card"><h2>O‘quvchilar natijasi</h2>${st.length? st.map(u=>`<div class="row"><div class="avatar">${u.name[0]}</div><div class="grow">${u.name} ${u.fam}<div class="sub" style="font-size:12px">${u.cls} · ${u.tests||0} ta test</div></div><span class="pill">${ic('bolt',14)} ${u.xp||0} XP</span></div>`).join('') : '<p class="sub">Hozircha o‘quvchi yo‘q.</p>'}</div>`;
+};
+pages.parent = () => {
+ if(!(USER.role==='parent' || USER.role==='dev')) return head('Ruxsat yo‘q','Bu bo‘lim ota-onalar uchun');
+ const kids = USER.role==='dev' ? USERS.filter(u=>u.role==='student') : (USER.children||[]).map(findUserByName).filter(Boolean);
+ return `${head('Ota-ona kabineti','Farzandingiz natijalari')}
+ ${kids.length? kids.map(k=>{ const h=k.hist||[]; const avg=h.length?Math.round(h.reduce((a,x)=>a+x.s/x.n,0)/h.length*100):0; return `<div class="card" style="margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div class="avatar">${k.name[0]}</div><div class="grow"><strong>${k.name} ${k.fam}</strong><div class="sub" style="font-size:12px">${k.cls} · ${k.tests||0} ta test · O‘rtacha ${avg}%</div></div><span class="pill">${ic('bolt',14)} ${k.xp||0} XP</span></div>`; }).join('') : '<div class="card"><p class="sub">Farzandingiz hali bog‘lanmagan. Ro‘yxatdan o‘tishda farzandingizning username va ota-ona kodini kiriting.</p></div>'}`;
+};
+pages.settings = () => `${head('Profil','Shaxsiy ma’lumotlar va sozlamalar')}
+ <div class="card" style="max-width:560px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <div class="avatar" style="width:64px;height:64px;font-size:22px">${USER.name[0]}</div>
+  <div class="grow"><h2 style="margin:0">${USER.name} ${USER.fam}</h2><p class="sub">@${USER.username} · ${roleLabel(USER)}</p><p class="sub" style="font-size:12px">${USER.xp||0} XP · Level ${lvl().n}</p></div>
+  <button class="btn" onclick="logoutUser()">${ic('logout')} Chiqish</button>
+ </div>
+ ${USER.role==='student' ? `<div class="card" style="max-width:560px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div class="stat-ic" style="margin:0">${ic('family')}</div><div class="grow"><div class="sub" style="font-size:12px">Ota-ona taklif kodi</div><div style="font-size:22px;font-weight:700;letter-spacing:.14em">${USER.pcode}</div><div class="sub" style="font-size:12px">Ota-onangiz ro‘yxatdan o‘tishda shu 6 raqamli kodni kiritadi</div></div></div>` : ''}
+ <div class="card" style="max-width:560px">
+  <div class="row" style="border:0"><div class="grow">Mavzu</div><button class="btn" onclick="toggleTheme();route()">${ic('moon')} O‘zgartirish</button></div>
+  <div class="row" style="border:0"><div class="grow">Yangi bildirishnomalar</div><span class="pill ok">${(USER.notifs||[]).filter(n=>!n.read).length} ta</span></div>
+ </div>`;
+function regCodeInfo(){
+ const role=REG.role, code=(REG.input||'').trim().toUpperCase();
+ if(role==='student'){ const o=findUserByName(REG.friend); const i=o&&(o.invites||[]).find(x=>x.code===code&&!x.used); return i?{o,i}:null; }
+ if(role==='parent'){ const c=findUserByName(REG.friend); return (c&&c.role==='student'&&c.pcode===code)?{c}:null; }
+ const t=TCODES.find(x=>x.code===code&&!x.used); return t?{t}:null;
+}
+function regValidate(){
+ if(REG.step===1){
+  if(!REG.role) return err('Rolni tanlang');
+  if(!REG.g) return err('Jinsni tanlang');
+  if(!REG.ism.trim() || !REG.fam.trim()) return err('Ism va familiyani kiriting');
+ }
+ if(REG.step===2){
+  const u=REG.user.trim().toLowerCase();
+  if(!/^[a-z0-9_]{4,20}$/.test(u)) return err('Username 4–20 belgi: lotin harf, raqam yoki _');
+  if(USERS.some(x=>x.username===u)) return err('Bu username band');
+  if(!/^\S+@\S+\.\S+$/.test(REG.email.trim())) return err('Email noto‘g‘ri');
+  if(REG.role==='student'){
+   const f=findUserByName(REG.friend);
+   if(!f) return err('Do‘stingizning username’i topilmadi');
+   if(f.username===u) return err('O‘zingizni do‘st qilib bo‘lmaydi');
+  }
+  if(REG.role==='parent'){
+   const c=findUserByName(REG.friend);
+   if(!c || c.role!=='student') return err('Farzandingizning username’i topilmadi');
+  }
+ }
+ if(REG.step===3){
+  if(pwScore(REG.pass)<4) return err('Parol barcha talablarga javob berishi kerak');
+  if(REG.pass!==REG.pass2) return err('Parollar mos emas');
+  if(!REG.terms) return err('Shartlarga rozilik bering');
+ }
+ return true;
+}
+function regNext(){
+ regCollect();
+ if(!regValidate()) return;
+ if(REG.step===4){
+  if(!regCodeInfo()){
+   REG.tries++;
+   if(REG.tries>=5){ REG=freshReg(); regRender(); return err('Ko‘p urinish. Qaytadan boshlang'); }
+   return err(REG.role==='teacher' ? 'O‘qituvchi kodi noto‘g‘ri yoki ishlatilgan' : REG.role==='parent' ? 'Ota-ona kodi noto‘g‘ri' : 'Taklif kodi noto‘g‘ri yoki ishlatilgan');
+  }
+  return createAccount();
+ }
+ REG.step++; regRender();
+}
+function regStepHtml(){
+ const steps=['Shaxsiy','Hisob','Xavfsizlik','Tasdiqlash'];
+ const prog = `<div style="display:flex;gap:6px;margin:18px 0 6px">${steps.map((_,i)=>`<span style="flex:1;height:4px;border-radius:9px;background:${i<REG.step?'var(--accent)':'rgba(127,127,127,.25)'};transition:background .4s"></span>`).join('')}</div><p class="sub" style="font-size:12px">${REG.step}/4 · ${steps[REG.step-1]}</p>`;
+ let b='';
+ if(REG.step===1){
+  const roles=[['student','O‘quvchi','book'],['parent','Ota-ona','family'],['teacher','O‘qituvchi','teacher']];
+  b = `<div class="gender" style="grid-template-columns:repeat(3,1fr)">${roles.map(([k,l,i])=>`<button type="button" class="gbtn ${REG.role===k?'on':''}" onclick="regCollect();REG.role='${k}';regRender()">${ic(i,26)}<span>${l}</span></button>`).join('')}</div>
+  <div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
+  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}" placeholder="Masalan: Ayaulim"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}" placeholder="Masalan: Karimova"></div></div>`;
+ } else if(REG.step===2){
+  const extra = REG.role==='student' ? `<div class="field"><label>${ic('friend',16)} Do‘stingizning username’i</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div><p class="sub" style="font-size:12px">Taklif kodini aynan shu do‘stingizning “Do‘stlar” bo‘limidan olasiz.</p>`
+   : REG.role==='parent' ? `<div class="field"><label>${ic('family',16)} Farzandingizning username’i</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div><p class="sub" style="font-size:12px">Ota-ona kodini farzandingizning Profil sahifasidan oling.</p>`
+   : '<p class="sub" style="font-size:12px">O‘qituvchi kodini developer beradi.</p>';
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: ayaulim_07"></div>
+  <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
+  ${REG.role==='student' ? `<div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>` : ''}
+  ${extra}`;
+ } else if(REG.step===3){
+  b = `<div class="field"><label>Parol</label><input id="r-pass" type="password" value="${REG.pass}" oninput="regPw()"></div>
+  <div class="pwbar"><span id="pw-m" style="width:${pwScore(REG.pass)*25}%"></span></div>
+  <div class="rules">${PW_RULES.map((r,i)=>`<span id="pr${i}" class="${r[1](REG.pass)?'okr':''}">${r[0]}</span>`).join('')}</div>
+  <div class="field"><label>Parolni tasdiqlang</label><input id="r-pass2" type="password" value="${REG.pass2}"></div>
+  <label class="terms"><input type="checkbox" id="r-terms" ${REG.terms?'checked':''} style="width:auto;margin-top:3px"><span>Maxfiylik siyosati va foydalanish shartlariga roziman</span></label>`;
+ } else {
+  const hint = REG.role==='student' ? `<b>@${(REG.friend||'').replace(/^@/,'')}</b> ning “Do‘stlar” bo‘limidagi taklif kodini kiriting.` : REG.role==='parent' ? 'Farzandingizning Profil sahifasidagi 6 raqamli ota-ona kodini kiriting.' : 'Developer bergan o‘qituvchi kodini kiriting.';
+  const ph = REG.role==='parent' ? '000000' : REG.role==='teacher' ? 'XXXXXXXXXXXXXXXX' : 'KS******';
+  const ml = REG.role==='parent' ? 6 : REG.role==='teacher' ? 16 : 8;
+  b = `<p class="sub" style="margin-bottom:14px">${hint}</p>
+  <div class="field"><label>${REG.role==='parent'?'Ota-ona kodi':REG.role==='teacher'?'O‘qituvchi kodi':'Taklif kodi'}</label><input id="r-code" class="code" maxlength="${ml}" value="${REG.input}" placeholder="${ph}" style="text-transform:uppercase"></div>`;
+ }
+ const back = REG.step>1 ? `<button class="back-btn" onclick="regCollect();REG.step--;regRender()">Orqaga</button>` : '';
+ const label = REG.step===4 ? 'Ro‘yxatdan o‘tish' : 'Davom etish';
+ return prog + b + `<div id="err" class="err"></div><div class="navrow">${back}<button class="btn-main" onclick="regNext()">${label} ${ic('play',16)}</button></div>`;
+}
+function createAccount(){
+ const info=regCodeInfo(); if(!info) return err('Kod noto‘g‘ri');
+ const u={username:REG.user.trim().toLowerCase(), name:REG.ism.trim(), fam:REG.fam.trim(), cls:REG.role==='student'?REG.sinf:'', email:REG.email.trim(), pass:REG.pass, g:REG.g, role:REG.role, xp:0, tests:0, hist:[], notifs:[], friends:[], children:[], perfect:false};
+ ensureSocial(u);
+ if(REG.role==='student'){
+  u.friends=[info.o.username]; info.i.used=true; info.i.by=u.username; info.o.friends.push(u.username);
+  info.o.notifs.push({type:'friend', t:'Yangi do‘st!', d:`${u.name} ${u.fam} (@${u.username}) sizning taklif kodingiz orqali ro‘yxatdan o‘tdi`, time:new Date().toLocaleString('uz-UZ'), read:false});
+ } else if(REG.role==='parent'){
+  u.children=[info.c.username];
+  info.c.notifs.push({type:'friend', t:'Ota-ona bog‘landi', d:`${u.name} ${u.fam} (ota-ona) sizning profilingizga bog‘landi`, time:new Date().toLocaleString('uz-UZ'), read:false});
+ } else {
+  info.t.used=true; info.t.by=u.username;
+ }
+ USERS.push(u); USER=u; REG=freshReg();
+ location.hash='dashboard'; route(); toast('Xush kelibsiz, '+u.name+'!');
+}
+function freshReg(){ return {step:1,role:'',g:'',ism:'',fam:'',user:'',email:'',sinf:'8-A',friend:'',pass:'',pass2:'',terms:false,input:'',tries:0}; }
+function setAuthMode(m){ AUTH_MODE=m; if(m==='reg') REG=freshReg(); $('#authcard').innerHTML=authInner(); }
+(function(){
+ const bl = THEMES.find(t=>t.id==='blue');
+ if(bl){ bl.a='#1d4ed8'; bl.s='#dbeafe'; bl.sf='#eef4ff'; bl.dk='#3b82f6'; bl.dks='#172554'; }
+ const st=document.createElement('style');
+ st.textContent = `.auth .blob{opacity:.8 !important}
+.auth.t1::before{opacity:.45 !important}
+.card{border-color:color-mix(in srgb,var(--accent) 18%,var(--line)) !important}
+.pill.ok{color:var(--accent)}`;
+ document.head.appendChild(st);
+ applyTheme();
+})();
+(function(){
+ const bl = THEMES.find(t=>t.id==='blue');
+ if(bl){ bl.a='#1e3a8a'; bl.s='#dbeafe'; bl.sf='#eef2fb'; bl.dk='#2563eb'; bl.dks='#172554'; }
+})();
+function applyTheme(){
+ const dark = document.documentElement.dataset.theme==='dark';
+ const t = THEMES.find(x=>x.id===CUR_THEME) || THEMES[0];
+ const st = document.documentElement.style;
+ st.setProperty('--accent', dark ? t.dk : t.a);
+ st.setProperty('--accent-soft', dark ? t.dks : t.s);
+ st.setProperty('--accent2', CUR_THEME==='red' ? (dark?'#f87171':'#b91c1c') : (dark?'#1d4ed8':'#172554'));
+ if(dark){ st.removeProperty('--bg'); st.removeProperty('--surface'); }
+ else { st.setProperty('--bg', t.bg); st.setProperty('--surface', t.sf); }
+}
+applyTheme();
+(function(){
+ const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#1e3a8a"/><path d="M32 21c-4.5-3.2-10.5-4.2-17-4.2v28.4c6.5 0 12.5 1 17 4.2 4.5-3.2 10.5-4.2 17-4.2V16.8c-6.5 0-12.5 1-17 4.2z" fill="#ffffff"/><path d="M32 21v28.4" stroke="#1e3a8a" stroke-width="2.6" stroke-linecap="round"/><circle cx="49" cy="14" r="5.5" fill="#dc2626"/></svg>';
+ document.querySelectorAll('link[rel~="icon"]').forEach(l=>l.remove());
+ const l = document.createElement('link');
+ l.rel = 'icon'; l.type = 'image/svg+xml';
+ l.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+ document.head.appendChild(l);
+})();
+(function(){
+ document.querySelectorAll('link[rel~="icon"]').forEach(l=>l.remove());
+ const u='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAG/UlEQVR4nO3du5EUVwCF4d4tQsBeDBnksHjEQgoQxJKCYpEHOWDIAFs5rIytgWGYR89031ef7/NUheCqxPn79iyPu2mDHh6fnlufge358fXTXeszrG3o/yBDpwcjh2Gogxs8IxgpCN0f1OgZWe8x6PZwhs+W9BqCrg5l9CToKQZdHMTwSdRDCJoewPChbQjuW/3Axg8vWm6henkMH06rfRuoegMwfjiv9kaq1Mbw4Xo1bgPFbwDGD7epsZ2iATB+WKb0hopcMQwf1lfilWD1G4DxQxkltrVqAIwfylp7Y6sFwPihjjW3tkoAjB/qWmtziwNg/NDGGttbFADjh7aWbvDmABg/9GHJFl+teRBI8c9/f1/8Nu9ff6hwkmVu+oUFnv6kmTP4S0oH4ZZfKHT1v2D8JFlj+IdKhuDaCFz1jY2fFCWGf6hUCK6JQLM/EQh6VWP8NX+cc2aXwtOfrWs5yLVvA3NvAbNuAMbP1rV+Gq/948/drFcA4rUe/06Lc1wMgKc/W9bL+HfWPM+c7Z4NgPGzZb2Nf6dmBLwCQLCTAfD0Z8t6ffrv1LoFuAEQp/fx79Q459EAePrDtpzatBsAUUZ5+u+UPq8AQLA/AuD6z1aN9vTfWevcx7btBgDBfguApz9s2+HG3QAgmAAQYdT3/51S5/8ZANd/yLC/dTcACCYAEEwAINj9NHn/hzS7zbsBQDABgGACAMEEgAgj/EWd55Q6vwBAsHtfAYBMD49Pz24AEEwAiDHq5wAlzy0AEEwAiDLaLaD0eQUAggkAcUa5BdQ4pwAQqfcI1DqfAEAwASBWr7eAmucSAKL1FoHa54kLwPcvH1sfgc70EoEW53hV/UfswH4E3rz73PAk9ODl58PH6d+3b5udoVWEIgOw7/BGIAjbd+oW+Ne3b9M0TVVD0Pr2ER+AQ24H23TNq9/71x+q/EUircc/TQJwltvBuJZ+1rMbZ4kQ9DD8HQG4gttB30p8wLtmCHoa/o4A3EgM+lDrqzqH450ThB4Hf0gAVuBVoZ5evow7wrjnEIAC3A7W1cvot0gACnM7uJ7B1yMAlbkdHGf0bQhAQ+kxMPr2BKATCa8KBt8fAejUVm4HRt83ARjASLcDgx+LAAyot9uB0Y9LAAbXKgZGvw0CsCElXxUMfpsEYMOW3g6MfvsEIMSc24HB54n7MwE5fRt48+5zFx8qUo8AQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgr1ofoLY37z7/9s/fv3xsdBJ6cfhzIklcAA4d+58vCtuVPPZj4gNwjFvCdhj8eQIwgyCMw+CvIwA3EIR+GPwyArACnyPUYezrE4BC3BKWM/jyBKASQbjM4OsTgEYEweB7IACd2PrnCMbeJwHo2Mi3BIMfgwAMpOcgGPyY7qZpmh4en55bH4Tl5gbh0ljnfD8GP74fXz/duQFsSKnPEYx9uwRg4255bTD4HP48gDDGzT4BgGACAMHup+nl08DWBwHq2W3eDQCCCQAEEwAI9jMAPgeADPtbdwOAYAIAwX4LgNcA2LbDjbsBQLA/AuAWANt0bNtuABBMACDY0QB4DYBtObVpNwAIdjIAbgGwDee27AYAwc4GwC0AxnZpwxdvACIAY5qzXa8AEGxWANwCYCxzNzv7BiACMIZrtuoVAIJdFQC3AOjbtRu9+gYgAtCnW7Z50yuACEBfbt2kzwAg2M0BcAuAPizZ4qIbgAhAW0s3uPgVQASgjTW2t8pnACIAda21udU+BBQBqGPNra36VQARgLLW3tjqXwYUASijxLaKjvXh8em55PcPCUo+VIv+QiC3AVim9IaK/0pAEYDb1NhO1XF6JYDLaj40q/5eALcBOK/2RpoN0m0Afmn1cGz2uwHdBuBFyy10MUK3ARL18BBsfoB9QkCCHoa/081BDokBW9LT6Pd1eah9QsDIeh3+TteHOyQGjKD30e8b5qDHCAI9GGnwh4Y9+DnCQAkjD/2U/wGCCCAHw/11fAAAAABJRU5ErkJggg==';
+ const l=document.createElement('link'); l.rel='icon'; l.type='image/png'; l.href=u; document.head.appendChild(l);
+ const a=document.createElement('link'); a.rel='apple-touch-icon'; a.href=u; document.head.appendChild(a);
+})();
+function renderNav(active){
+ const can = p => {
+  if(!USER || p.id==='login') return false;
+  if(p.id==='admin') return USER.role==='dev';
+  if(p.id==='teacher') return USER.role==='teacher' || USER.role==='dev';
+  if(p.id==='parent') return USER.role==='parent' || USER.role==='dev';
+  return true;
+ };
+ const groups=[]; let cur=null;
+ PAGES.forEach(p=>{ if(p.group){ cur={g:p.group, list:[]}; groups.push(cur); } else if(cur && can(p)) cur.list.push(p); });
+ $('#nav').innerHTML = (!USER ? '' : groups.filter(g=>g.list.length).map(g=>`<small>${g.g}</small>` + g.list.map(p=>`<a href="#${p.id}" class="${p.id===active?'active':''}" onclick="closeSide()">${ic(p.i)}${p.t}</a>`).join('')).join(''));
+}
+function linkChild(raw){
+ const code=(raw||'').trim();
+ if(!USER) return;
+ if(!/^\d{6}$/.test(code)) return toast('6 raqamli kodni kiriting');
+ const child = USERS.find(u=>u.role==='student' && u.pcode===code);
+ if(!child) return toast('Bunday ota-ona kodi topilmadi');
+ if((USER.children||[]).includes(child.username)) return toast('Bu farzand allaqachon bog‘langan');
+ USER.children.push(child.username);
+ child.notifs.push({type:'friend', t:'Ota-ona bog‘landi', d:`${USER.name} ${USER.fam} (ota-ona) sizning profilingizga bog‘landi`, time:new Date().toLocaleString('uz-UZ'), read:false});
+ toast(child.name+' bog‘landi'); route();
+}
+pages.parent = () => {
+ if(!(USER.role==='parent' || USER.role==='dev')) return head('Ruxsat yo‘q','Bu bo‘lim ota-onalar uchun');
+ const kids = USER.role==='dev' ? USERS.filter(u=>u.role==='student') : (USER.children||[]).map(findUserByName).filter(Boolean);
+ return `${head('Ota-ona kabineti','Farzandingizni kod orqali bog‘lang')}
+ <div class="card" style="max-width:560px;margin-bottom:16px"><h2>Farzand kodi</h2><p class="sub" style="margin:6px 0 14px">Farzandingizning profilidagi 6 raqamli ota-ona kodini kiriting.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><input id="pk" inputmode="numeric" maxlength="6" placeholder="000000" style="flex:1;min-width:180px;letter-spacing:.3em;font-weight:700"><button class="btn primary" onclick="linkChild($('#pk').value)">${ic('plus')} Bog‘lash</button></div></div>
+ ${kids.length ? kids.map(k=>{ const h=k.hist||[]; const avg=h.length?Math.round(h.reduce((a,x)=>a+x.s/x.n,0)/h.length*100):0; return `<div class="card" style="margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div class="avatar">${k.name[0]}</div><div class="grow"><strong>${k.name} ${k.fam}</strong><div class="sub" style="font-size:12px">${k.cls} · ${k.tests||0} ta test · O‘rtacha ${avg}%</div></div><span class="pill">${ic('bolt',14)} ${k.xp||0} XP</span></div>`; }).join('') : '<div class="card"><p class="sub">Hozircha bog‘langan farzand yo‘q.</p></div>'}`;
+};
+(function(){
+ THEMES.splice(0, THEMES.length,
+  {id:'blue', name:'Ko‘k-oq', a:'#1e3a8a', a2:'#172554', s:'#dbeafe', bg:'#ffffff', sf:'#eef2fb', dk:'#2563eb', dks:'#172554'},
+  {id:'red', name:'Qizil-oq', a:'#dc2626', a2:'#b91c1c', s:'#fee2e2', bg:'#ffffff', sf:'#fff5f5', dk:'#f87171', dks:'#3b1518'},
+  {id:'green', name:'Yashil-oq', a:'#15803d', a2:'#14532d', s:'#dcfce7', bg:'#ffffff', sf:'#f3fbf5', dk:'#4ade80', dks:'#14532d'},
+  {id:'yellow', name:'Sariq-oq', a:'#b45309', a2:'#92400e', s:'#fef3c7', bg:'#ffffff', sf:'#fffbeb', dk:'#facc15', dks:'#422006'},
+  {id:'black', name:'Qora-oq', a:'#111827', a2:'#374151', s:'#e5e7eb', bg:'#ffffff', sf:'#f5f5f5', dk:'#e5e7eb', dks:'#1f2937'},
+  {id:'purple', name:'Binafsha-oq', a:'#7e22ce', a2:'#581c87', s:'#f3e8ff', bg:'#ffffff', sf:'#faf5ff', dk:'#c084fc', dks:'#3b0764'}
+ );
+ if(!THEMES.some(t=>t.id===CUR_THEME)) CUR_THEME='blue';
+})();
+function applyTheme(){
+ const dark = document.documentElement.dataset.theme==='dark';
+ const t = THEMES.find(x=>x.id===CUR_THEME) || THEMES[0];
+ const st = document.documentElement.style;
+ st.setProperty('--accent', dark ? t.dk : t.a);
+ st.setProperty('--accent-soft', dark ? t.dks : t.s);
+ st.setProperty('--accent2', dark ? t.dk : t.a2);
+ if(dark){ st.removeProperty('--bg'); st.removeProperty('--surface'); }
+ else { st.setProperty('--bg', t.bg); st.setProperty('--surface', t.sf); }
+}
+applyTheme();
+(function(){
+ const sp=document.querySelector('svg[width="0"]');
+ if(!sp) return;
+ const D=' fill="currentColor" fill-opacity=".18"';
+ const F=' fill="currentColor"';
+ sp.innerHTML = `
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 11 12 3.8l8.5 7.2"/><path d="M5.5 9.8V19.5a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5V9.8L12 4.6z"${D}/><path d="M9.5 21v-5.2a2.5 2.5 0 0 1 5 0V21"/><path d="M12 4.6V2.8"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2"${D}/><path d="M4 21c.8-4 4-6.4 8-6.4s7.2 2.4 8 6.4"/><path d="M9.5 8.2a2.5 2.5 0 0 0 5 0" stroke-opacity=".5"/></symbol>
+<symbol id="i-test" viewBox="0 0 24 24"><rect x="4.5" y="3" width="15" height="18" rx="3"${D}/><path d="M8 3.5h8v2.5H8z"${F}/><path d="M8 10.5l1.4 1.4 2.6-2.6M8 16l1.4 1.4 2.6-2.6"/><path d="M14 11.2h2.5M14 16.6h2.5"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7.5 4h9v4.6a4.5 4.5 0 0 1-9 0z"${D}/><path d="M7.5 6H4.8a2.6 2.6 0 0 0 2.9 3.4M16.5 6h2.7a2.6 2.6 0 0 1-2.9 3.4"/><path d="M12 13.1v3.4M8.2 20.5h7.6M9.6 16.5h4.8"/><circle cx="12" cy="8.2" r="1"${F}/></symbol>
+<symbol id="i-medal" viewBox="0 0 24 24"><path d="M7.6 3.2 10.4 9h3.2l2.8-5.8"/><circle cx="12" cy="15" r="6"${D}/><circle cx="12" cy="15" r="3.2"/><path d="M12 13.4l.5 1.1 1.2.2-.9.8.2 1.2-1-.6-1 .6.2-1.2-.9-.8 1.2-.2z"${F}/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><rect x="4.5" y="8" width="15" height="11.5" rx="3.5"${D}/><path d="M12 8V4.5"/><circle cx="12" cy="3.6" r="1.2"${F}/><circle cx="9.2" cy="13.2" r="1.5"${F}/><circle cx="14.8" cy="13.2" r="1.5"${F}/><path d="M9.3 17h5.4"/><path d="M2.5 12.5v3M21.5 12.5v3"/></symbol>
+<symbol id="i-family" viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.4"${D}/><path d="M2.8 20c.6-3.4 2.9-5.3 5.7-5.3s5.1 1.9 5.7 5.3"/><circle cx="17.2" cy="9.6" r="2.5"/><path d="M15.4 14.6c2.7.1 4.4 1.5 5 4.6"/></symbol>
+<symbol id="i-teacher" viewBox="0 0 24 24"><path d="M12 4 2.6 8.6 12 13.2l9.4-4.6z"${D}/><path d="M6.3 11v4.8c0 1.6 2.6 3.2 5.7 3.2s5.7-1.6 5.7-3.2V11"/><path d="M21.4 8.6v5.4"/><circle cx="21.4" cy="15.3" r=".9"${F}/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M10.2 2.6h3.6l.5 2.6 2.2 1 2.3-1.4 2.5 2.5-1.4 2.3 1 2.2 2.6.5v3.6l-2.6.5-1 2.2 1.4 2.3-2.5 2.5-2.3-1.4-2.2 1-.5 2.6h-3.6l-.5-2.6-2.2-1-2.3 1.4-2.5-2.5 1.4-2.3-1-2.2-2.6-.5v-3.6l2.6-.5 1-2.2-1.4-2.3 2.5-2.5 2.3 1.4 2.2-1z"${D}/><circle cx="12" cy="12" r="3.2"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10 4.8 7 4 3.5 4.2v14.6c3.5-.2 6.5.6 8.5 2.3 2-1.7 5-2.5 8.5-2.3V4.2C17 4 14 4.8 12 6.5z"${D}/><path d="M12 6.5v14.4"/><path d="M6.5 8.5c1.6 0 3 .3 4.2.9M6.5 11.5c1.6 0 3 .3 4.2.9M17.5 8.5c-1.6 0-3 .3-4.2.9" stroke-opacity=".55"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16.5" rx="3"${D}/><path d="M3.5 9.5h17"/><path d="M8 2.8v3.4M16 2.8v3.4"/><rect x="6.5" y="12.2" width="3" height="2.6" rx=".6"${F}/><rect x="14.5" y="12.2" width="3" height="2.6" rx=".6"${D}/><rect x="6.5" y="16.6" width="3" height="2" rx=".6"${D}/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.8 4.5 5.6v5.6c0 4.8 3.2 8.6 7.5 10 4.3-1.4 7.5-5.2 7.5-10V5.6z"${D}/><path d="M8.6 12.1l2.3 2.3 4.6-4.6"/><path d="M12 2.8v18" stroke-opacity=".25"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><rect x="3.8" y="12.2" width="3.6" height="8.3" rx="1.2"${D}/><rect x="10.2" y="7.5" width="3.6" height="13" rx="1.2"${D}/><rect x="16.6" y="3.5" width="3.6" height="17" rx="1.2"${D}/><path d="M3 21.2h18"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.6 2.5 4.8 13.4h6.1l-1.1 8.1 9.3-11.2h-6.2z"${D}/><path d="M10.8 10.2h2.6" stroke-opacity=".5"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21.4c3.8 0 6.6-2.7 6.6-6.4 0-2.7-1.6-4.7-2.9-6.4-.4 2-1.3 3.2-2.5 3.7.3-4-.7-7.5-4-9.5-.2 2.9-1.8 4.5-3.4 6.4C5.5 11.4 5.2 13 5.2 15c0 3.7 2.8 6.4 6.8 6.4z"${D}/><path d="M12 21.4c-1.8 0-3-1.2-3-2.8 0-1.5 1-2.4 1.8-3.4.3 1 .8 1.6 1.4 1.9.1-1.9.8-3.1 1.8-4 .4 1.6 1.2 2.6 1.4 3.6.7 1 1 1.8 1 2.7 0 1.6-1.2 3-3.4 3z"${F}/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a8.6 8.6 0 1 0 11 11z"${D}/><path d="M16.5 4.5l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z"${F}/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"${D}/><path d="M12 2.4v2.3M12 19.3v2.3M2.4 12h2.3M19.3 12h2.3M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M5.1 18.9l1.6-1.6M17.3 6.7l1.6-1.6"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M3.5 7h17M3.5 12h17M3.5 17h11"/><circle cx="19.5" cy="17" r=".9"${F}/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"${D}/><path d="M10 21a2.1 2.1 0 0 0 4 0"/><path d="M12 2.8v1.8"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 5.6A2.6 2.6 0 0 1 6.6 3h10.8A2.6 2.6 0 0 1 20 5.6v8.8a2.6 2.6 0 0 1-2.6 2.6H10l-4.6 3.6V17h-.8A2.6 2.6 0 0 1 4 14.4z"${D}/><path d="M8 8.5h8M8 11.8h5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"${D}/><path d="M7.6 12.4l3 3 5.8-6.2"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"${D}/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7.5 4.8v14.4a1 1 0 0 0 1.5.9l11.4-7.2a1 1 0 0 0 0-1.7L9 3.9a1 1 0 0 0-1.5.9z"${D}/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"${D}/><path d="M20.2 20.2l-4.6-4.6"/><path d="M7.8 9.6a3.2 3.2 0 0 1 3-3" stroke-opacity=".5"/></symbol>
+<symbol id="i-book2" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.6"${D}/><path d="M9 7.5h6M9 11h6M9 14.5h4"/><path d="M5 18.5a2.2 2.2 0 0 0 2.2 2.2H19"/></symbol>
+<symbol id="i-video" viewBox="0 0 24 24"><rect x="2.8" y="6" width="13.4" height="12" rx="2.8"${D}/><path d="M16.2 10.2 21 7.4v9.2l-4.8-2.8"/><path d="M7.2 10.1v3.8l3.4-1.9z"${F}/></symbol>
+<symbol id="i-task" viewBox="0 0 24 24"><rect x="4.5" y="3.2" width="15" height="17.6" rx="2.6"${D}/><path d="M8.3 9.2l1.5 1.5 2.8-2.8M8.3 15.2l1.5 1.5 2.8-2.8"/><path d="M14.3 10.5h2.4M14.3 16.5h2.4"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><path d="M5 3.5h14v11.8l-4.7 4.7H5z"${D}/><path d="M14.3 20.6v-4.7H19"/><path d="M8.5 8.5h7M8.5 12h4"/></symbol>
+<symbol id="i-news" viewBox="0 0 24 24"><path d="M4 6.2h12.6v13.3H6.6A2.6 2.6 0 0 1 4 16.9z"${D}/><path d="M16.6 10h3.4v7.2a2.3 2.3 0 0 1-2.3 2.3"/><path d="M7.5 10h6M7.5 13.5h6M7.5 17h4"/></symbol>
+<symbol id="i-calc" viewBox="0 0 24 24"><rect x="4.8" y="2.8" width="14.4" height="18.4" rx="2.8"${D}/><rect x="7.6" y="6.2" width="8.8" height="3.6" rx=".8"${F}/><circle cx="8.6" cy="13.4" r=".9"${F}/><circle cx="12" cy="13.4" r=".9"${F}/><circle cx="15.4" cy="13.4" r=".9"${F}/><circle cx="8.6" cy="17.2" r=".9"${F}/><circle cx="12" cy="17.2" r=".9"${F}/><circle cx="15.4" cy="17.2" r=".9"${F}/></symbol>
+<symbol id="i-dict" viewBox="0 0 24 24"><path d="M3.5 5.2A2.6 2.6 0 0 1 6.1 2.6H11v18.2H6.1a2.6 2.6 0 0 0-2.6 2.6z"${D}/><path d="M20.5 5.2a2.6 2.6 0 0 0-2.6-2.6H13v18.2h4.9a2.6 2.6 0 0 1 2.6 2.6z"/><path d="M6.3 7.5h2.5M6.3 11h2.5" stroke-opacity=".6"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M13.5 4.5H6.8A2.3 2.3 0 0 0 4.5 6.8v10.4a2.3 2.3 0 0 0 2.3 2.3h6.7"/><path d="M10.2 12h10.3M17.2 8.2 21 12l-3.8 3.8"${D}/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"${D}/><path d="M12 7.5v9M7.5 12h9"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"${D}/><path d="M12 7.2V12l3.4 2.1"/><path d="M12 3.2v1M21 12h-1M12 21v-1M3 12h1" stroke-opacity=".5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"${D}/></symbol>
+<symbol id="i-logo" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="8" height="15" rx="2.4"${F}/><rect x="12.5" y="4.5" width="8" height="15" rx="2.4"${F} fill-opacity=".55"/><path d="M12 6v11" stroke="#ffffff" stroke-width="1.2"/></symbol>
+<symbol id="i-friend" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.8"${D}/><path d="M2.2 20.5c.7-3.6 3.3-5.6 6.8-5.6s6.1 2 6.8 5.6"/><path d="M17.8 7.8v6.6M14.5 11.1h6.6"/></symbol>
+<symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.9 1.8-1.8 0-.5-.2-.9-.4-1.2-.2-.3-.4-.7-.4-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"${D}/><circle cx="7.4" cy="11" r="1.4"${F}/><circle cx="10.4" cy="7" r="1.4"${F}/><circle cx="15.2" cy="7.6" r="1.4"${F}/></symbol>
+`;
+})();
+(function(){
+ THEMES.push(
+  {id:'violet', name:'Binafsha (violet)-oq', a:'#6d28d9', a2:'#4c1d95', s:'#ede9fe', bg:'#ffffff', sf:'#f7f5ff', dk:'#a78bfa', dks:'#2e1065'},
+  {id:'peach', name:'Shaftoli-oq', a:'#c2410c', a2:'#9a3412', s:'#ffedd5', bg:'#ffffff', sf:'#fff8f3', dk:'#fb923c', dks:'#431407'},
+  {id:'cosmetic', name:'Kosmetik-oq', a:'#be185d', a2:'#9d174d', s:'#fce7f3', bg:'#ffffff', sf:'#fff5fa', dk:'#f472b6', dks:'#500724'},
+  {id:'fresh', name:'Fresh-oq', a:'#0f766e', a2:'#115e59', s:'#ccfbf1', bg:'#ffffff', sf:'#f2fcfa', dk:'#2dd4bf', dks:'#042f2e'}
+ );
+})();
+(function(){
+ const v=THEMES.find(t=>t.id==='violet'); if(v){ v.a='#5b21b6'; v.a2='#3b0764'; v.s='#ede9fe'; v.dk='#a78bfa'; v.dks='#2e1065'; v.name='Violet-oq'; }
+ const p=THEMES.find(t=>t.id==='purple'); if(p){ p.a='#a21caf'; p.a2='#86198f'; p.s='#fae8ff'; p.dk='#e879f9'; p.dks='#4a044e'; p.name='Binafsha-oq'; }
+ if(!THEMES.some(t=>t.id==='newyear')) THEMES.push({id:'newyear', name:'Yangi yil', a:'#b91c1c', a2:'#15803d', s:'#fee2e2', bg:'#fffdf8', sf:'#f0fdf4', dk:'#f87171', dks:'#3b0d0d'});
+ const st=document.createElement('style');
+ st.textContent = `
+#snow{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden;display:none}
+.ny #snow{display:block}
+.flake{position:absolute;top:-12px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.9);animation-name:fall,sway;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite}
+@keyframes fall{to{transform:translateY(110vh)}}
+@keyframes sway{0%,100%{margin-left:0}50%{margin-left:30px}}
+.ny #view{position:relative;padding-top:10px}
+.ny #view::before{content:"";position:absolute;left:0;right:0;top:-4px;height:16px;pointer-events:none;background:radial-gradient(circle,#dc2626 4px,transparent 5px) 0 0/30px 16px repeat-x,radial-gradient(circle,#eab308 4px,transparent 5px) 15px 6px/30px 16px repeat-x}
+.ny .logo-mark{box-shadow:0 0 0 3px #eab308,0 0 14px rgba(234,179,8,.6)}
+.ny .card{border-color:#fecaca}
+.ny .card:hover{box-shadow:0 10px 30px rgba(185,28,28,.15)}
+.ny .stat-ic{background:#dcfce7 !important;color:#15803d !important}
+`;
+ document.head.appendChild(st);
+})();
+function applySnow(){
+ const on = CUR_THEME==='newyear';
+ document.documentElement.classList.toggle('ny', on);
+ let el=document.getElementById('snow');
+ if(on && !el){
+  el=document.createElement('div'); el.id='snow'; document.body.appendChild(el);
+  for(let i=0;i<70;i++){
+   const f=document.createElement('span'); f.className='flake';
+   const s=2+Math.random()*5;
+   f.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;opacity:${0.4+Math.random()*0.6};animation-duration:${8+Math.random()*12}s,${3+Math.random()*3}s;animation-delay:${-Math.random()*20}s,${-Math.random()*3}s`;
+   el.appendChild(f);
+  }
+ }
+}
+function applyTheme(){
+ const dark = document.documentElement.dataset.theme==='dark';
+ const t = THEMES.find(x=>x.id===CUR_THEME) || THEMES[0];
+ const st = document.documentElement.style;
+ st.setProperty('--accent', dark ? t.dk : t.a);
+ st.setProperty('--accent-soft', dark ? t.dks : t.s);
+ st.setProperty('--accent2', dark ? t.dk : t.a2);
+ if(dark){ st.removeProperty('--bg'); st.removeProperty('--surface'); }
+ else { st.setProperty('--bg', t.bg); st.setProperty('--surface', t.sf); }
+ applySnow();
+}
+applyTheme();
+(function(){
+ const st=document.createElement('style');
+ st.textContent = `
+.ny *,.ny *::before,.ny *::after{box-shadow:none !important;text-shadow:none !important;filter:none !important}
+.ny .blob,.ny .auth::after{display:none !important}
+.ny body{background:#fffdf8}
+.ny .auth.t1,.ny .auth.t2{background:linear-gradient(160deg,#fff7f7 0%,#f0fdf4 100%) !important;color:#1f2937}
+.ny .auth.t1 .glass{background:#ffffff;border:2px solid #fecaca}
+.ny aside{background:#fffdf8;border-right:3px dashed #fca5a5}
+.ny .logo-mark{background:#b91c1c !important;border:2px solid #eab308}
+.ny h1,.ny h2{color:#991b1b}
+.ny .nav a .ic{color:#15803d}
+.ny .nav a.active{background:#fee2e2;color:#991b1b}
+.ny .nav a.active .ic{color:#b91c1c}
+.ny .card{border:2px solid #fecaca;background:#fffefb}
+.ny .stat-ic .ic{color:#15803d}
+.ny .stat-ic{background:#dcfce7 !important}
+.ny .btn.primary,.ny .btn-main{background:#b91c1c !important;border-color:#b91c1c}
+.ny .seg button.on{background:#b91c1c;color:#fff}
+.ny .bar>span{background:linear-gradient(90deg,#15803d,#eab308) !important}
+.ny .pill.ok{background:#dcfce7;color:#14532d;border-color:#bbf7d0}
+.ny #xmas{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;width:112px;pointer-events:none;display:none}
+.ny #xmas{display:block}
+.ny #view::before{background:radial-gradient(circle,#b91c1c 4px,transparent 5px) 0 0/30px 16px repeat-x,radial-gradient(circle,#eab308 4px,transparent 5px) 15px 6px/30px 16px repeat-x !important}
+.flake{box-shadow:none !important}
+`;
+ document.head.appendChild(st);
+})();
+function applySnow(){
+ const on = CUR_THEME==='newyear';
+ document.documentElement.classList.toggle('ny', on);
+ let el=document.getElementById('snow');
+ if(on && !el){
+  el=document.createElement('div'); el.id='snow'; document.body.appendChild(el);
+  for(let i=0;i<70;i++){
+   const f=document.createElement('span'); f.className='flake';
+   const s=2+Math.random()*5;
+   f.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;opacity:${0.5+Math.random()*0.5};animation-duration:${8+Math.random()*12}s,${3+Math.random()*3}s;animation-delay:${-Math.random()*20}s,${-Math.random()*3}s`;
+   el.appendChild(f);
+  }
+ }
+ let tree=document.getElementById('xmas');
+ const sb=document.querySelector('aside');
+ if(on && !tree && sb){
+  tree=document.createElement('div'); tree.id='xmas';
+  tree.innerHTML = '<svg viewBox="0 0 120 150" width="112" height="140" aria-hidden="true"><polygon points="60,6 84,46 72,46 96,86 84,86 110,126 10,126 36,86 24,86 48,46 36,46" fill="#15803d"/><rect x="54" y="126" width="12" height="18" fill="#7c2d12"/><polygon points="60,0 64.5,11 76,11 66.5,18 70,30 60,23 50,30 53.5,18 44,11 55.5,11" fill="#eab308"/><circle cx="50" cy="90" r="5" fill="#dc2626"/><circle cx="72" cy="66" r="5" fill="#eab308"/><circle cx="62" cy="110" r="5" fill="#dc2626"/><circle cx="84" cy="104" r="4" fill="#ffffff"/><circle cx="40" cy="112" r="4" fill="#eab308"/><circle cx="44" cy="62" r="4" fill="#ffffff"/></svg>';
+  sb.appendChild(tree);
+ }
+}
+(function(){
+ const flake = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><g stroke="#fca5a5" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M30 8v44M8 30h44M14 14l32 32M46 14L14 46"/><path d="M26 12l4 4 4-4M26 48l4-4 4 4"/></g></svg>');
+ const st=document.createElement('style');
+ st.textContent = `
+.ny body{background:#fffbf4 url("data:image/svg+xml;utf8,${flake}") 0 0/60px 60px !important}
+.ny h1{color:#991b1b;position:relative;display:inline-block;padding-bottom:6px}
+.ny h1::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:4px;border-radius:4px;background:linear-gradient(90deg,#b91c1c,#eab308,#15803d)}
+.ny header.top{border-bottom:none}
+.ny .card{position:relative;border:2px solid #fecaca !important;border-top:6px solid #15803d !important;border-radius:18px !important;background:#fffefb !important}
+.ny .card h2{color:#991b1b}
+.ny .hero{background:linear-gradient(135deg,#fff1f2,#f0fdf4) !important;border:2px dashed #fca5a5 !important;border-radius:22px !important}
+.ny .btn.primary,.ny .btn-main{background:#b91c1c !important;border:2px solid #7f1d1d !important;color:#fff !important;border-radius:12px !important}
+.ny .btn:hover{border-color:#eab308 !important}
+.ny .btn-main{background:linear-gradient(90deg,#b91c1c,#dc2626) !important}
+.ny .bar{background:#fee2e2 !important;border-color:#fecaca !important}
+.ny .bar>span{background:repeating-linear-gradient(45deg,#dc2626 0 10px,#fff 10px 20px) !important;border-radius:99px}
+.ny .pill{border-radius:99px;border:1px solid #bbf7d0;background:#f0fdf4;color:#166534}
+.ny .pill.ok{background:#15803d !important;color:#fff !important;border-color:#15803d !important}
+.ny .tag{background:#fee2e2;color:#991b1b}
+.ny .tabs button.on{background:#15803d !important;border-color:#15803d !important;color:#fff !important}
+.ny .seg{background:#fef2f2 !important}
+.ny .seg button.on{background:#15803d !important;color:#fff !important}
+.ny .nav small{color:#b91c1c;font-weight:700}
+.ny .nav a.active{background:#dcfce7 !important;color:#14532d !important;border-left:4px solid #15803d}
+.ny .avatar{background:#fee2e2 !important;color:#991b1b !important;border:2px solid #eab308}
+.ny .row{border-bottom:1px dashed #fecaca}
+.ny .stat-val{color:#7f1d1d}
+.ny .auth.t1 .glass{border:3px double #b91c1c !important;border-radius:26px !important}
+.ny .auth .btn-main{border-radius:14px !important}
+.ny .feat .ic{color:#15803d !important}
+.ny .logo-mark{background:linear-gradient(135deg,#b91c1c,#15803d) !important;border:3px solid #eab308 !important}
+.ny .logo{color:#7f1d1d}
+.ny #view::before{height:22px !important;top:-10px !important;background:radial-gradient(circle,#b91c1c 4px,transparent 5px) 0 0/34px 22px repeat-x,radial-gradient(circle,#eab308 4px,transparent 5px) 17px 4px/34px 22px repeat-x,radial-gradient(circle,#15803d 4px,transparent 5px) 8px 12px/34px 22px repeat-x !important}
+.ny #xmas{bottom:28px !important}
+`;
+ document.head.appendChild(st);
+})();
+(function(){
+ const st=document.createElement('style');
+ st.textContent = `
+.ny #view{padding-top:34px !important}
+.ny #view::before{top:0 !important;height:20px !important}
+.ny #xmas{position:fixed !important;right:28px !important;bottom:20px !important;left:auto !important;transform:none !important;width:150px !important;z-index:30;pointer-events:none}
+.ny #xmas svg{width:150px;height:auto;display:block}
+.ny .nav{margin-bottom:0}
+.ny .festive-banner{display:flex;align-items:center;gap:18px;padding:22px 26px;border-radius:22px;background:linear-gradient(120deg,#b91c1c 0%,#991b1b 55%,#14532d 100%);color:#fff;border:3px solid #eab308;margin-bottom:22px;overflow:hidden;position:relative}
+.ny .festive-banner h1{color:#fff !important;margin:0;font-size:26px}
+.ny .festive-banner h1::after{background:#eab308 !important}
+.ny .festive-banner p{color:#fde68a;margin-top:6px;font-size:14px}
+.ny .festive-banner .stars{position:absolute;right:20px;top:10px;font-size:0}
+`;
+ document.head.appendChild(st);
+})();
+function applySnow(){
+ const on = CUR_THEME==='newyear';
+ document.documentElement.classList.toggle('ny', on);
+ let el=document.getElementById('snow');
+ if(on && !el){
+  el=document.createElement('div'); el.id='snow'; document.body.appendChild(el);
+  for(let i=0;i<70;i++){
+   const f=document.createElement('span'); f.className='flake';
+   const s=2+Math.random()*5;
+   f.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;opacity:${0.5+Math.random()*0.5};animation-duration:${8+Math.random()*12}s,${3+Math.random()*3}s;animation-delay:${-Math.random()*20}s,${-Math.random()*3}s`;
+   el.appendChild(f);
+  }
+ }
+ const old=document.getElementById('xmas'); if(old) old.remove();
+ if(on){
+  const tree=document.createElement('div'); tree.id='xmas';
+  tree.innerHTML = '<svg viewBox="0 0 160 220" aria-hidden="true"><rect x="70" y="186" width="20" height="24" fill="#7c2d12"/><polygon points="80,6 96,36 88,36 106,68 96,68 116,102 102,102 124,134 36,134 58,102 44,102 64,68 54,68 72,36 64,36" fill="#15803d"/><polygon points="80,46 100,84 60,84" fill="#166534" opacity=".35"/><polygon points="80,120 124,190 36,190" fill="#166534"/><path d="M52 88q14 10 28 0t28 0 28 0" fill="none" stroke="#eab308" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M40 150q20 12 40 0t40 0 40 0" fill="none" stroke="#eab308" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><circle cx="70" cy="72" r="5" fill="#dc2626"/><circle cx="98" cy="62" r="5" fill="#eab308"/><circle cx="58" cy="124" r="5" fill="#dc2626"/><circle cx="92" cy="114" r="5" fill="#ffffff"/><circle cx="112" cy="164" r="5" fill="#eab308"/><circle cx="60" cy="172" r="5" fill="#ffffff"/><circle cx="86" cy="160" r="5" fill="#dc2626"/><polygon points="80,-4 85,8 98,8 88,16 92,28 80,21 68,28 72,16 62,8 75,8" fill="#eab308"/><rect x="120" y="196" width="30" height="22" rx="2" fill="#dc2626"/><rect x="133" y="196" width="4" height="22" fill="#eab308"/><rect x="8" y="200" width="24" height="18" rx="2" fill="#15803d"/><rect x="18" y="200" width="4" height="18" fill="#fff"/></svg>';
+  document.body.appendChild(tree);
+ }
+}
+pages.themes = () => {
+ const T = THEMES.map(t=>{ const on=CUR_THEME===t.id; return `<div class="card" style="cursor:pointer;${on?'border-color:'+t.a+';box-shadow:0 0 0 2px '+t.a:''}" onclick="setTheme('${t.id}')"><div style="display:flex;gap:6px;margin-bottom:12px"><span style="flex:1;height:44px;border-radius:10px;background:${t.a}"></span><span style="flex:1;height:44px;border-radius:10px;background:${t.s};border:1px solid var(--line)"></span></div><div style="display:flex;align-items:center;justify-content:space-between"><h2 style="margin:0">${t.name}</h2>${on?`<span class="pill ok">${ic('check')} Tanlangan</span>`:''}</div><p class="sub" style="margin-top:4px">${on?'Hozir ishlatilmoqda':'Tanlash uchun bosing'}</p></div>`; }).join('');
+ return `<div class="festive-banner"><div class="grow"><h1>Sayt ko‘rinishini tanlang</h1><p>Mavzuni bosing — sayt darhol shu ranglarga o‘tadi</p></div></div>
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${T}</div>
+ <div class="card" style="margin-top:18px;max-width:560px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="stat-ic" style="margin:0">${ic('moon')}</div><div class="grow">Tungi rejim</div><button class="btn" onclick="toggleTheme();route()">${document.documentElement.dataset.theme==='dark'?'Yorug‘ rejim':'Tungi rejim'}</button></div>`;
+};
+(function(){
+ const bl=THEMES.find(t=>t.id==='blue');
+ if(bl){ bl.a='#2563eb'; bl.a2='#1d4ed8'; bl.s='#dbeafe'; bl.sf='#eef4ff'; bl.dk='#60a5fa'; bl.dks='#172554'; }
+ const st=document.createElement('style');
+ st.textContent = `
+.auth > .blob{opacity:.45 !important;background:color-mix(in srgb,var(--accent) 60%,#ffffff) !important;filter:blur(70px) !important}
+.auth.t2 > .blob{background:color-mix(in srgb,var(--accent) 70%,#0b1020) !important;opacity:.35 !important}
+.btn-main{background:linear-gradient(90deg,var(--accent),var(--accent2)) !important}
+`;
+ document.head.appendChild(st);
+ if(CUR_THEME==='blue') applyTheme();
+})();
+(function(){
+ const st=document.createElement('style');
+ st.textContent = `
+.auth > .blob{opacity:.35 !important;background:var(--accent) !important;filter:blur(70px) !important}
+.auth.t2 > .blob{opacity:.25 !important}
+`;
+ document.head.appendChild(st);
+})();
+(function(){
+ if(!THEMES.some(t=>t.id==='emerald')) THEMES.push({id:'emerald', name:'Zumrad-oltin', a:'#047857', a2:'#b8860b', s:'#d1fae5', bg:'#fffdf6', sf:'#f5fbf7', dk:'#34d399', dks:'#022c22'});
+ const st=document.createElement('style');
+ st.textContent = `
+.themes-page .card{background:var(--bg) !important;color:var(--text) !important}
+.themes-page .card h2{color:var(--text) !important}
+.themes-page .card .sub{color:var(--muted) !important}
+.themes-page .festive-sub{margin:6px 0 22px;color:var(--muted)}
+.festive-banner{display:flex;align-items:center;padding:18px 22px;border-radius:18px;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#fff;margin-bottom:6px}
+.festive-banner h1{color:#fff !important;margin:0;font-size:24px}
+.festive-banner h1::after{display:none}
+`;
+ document.head.appendChild(st);
+})();
+pages.themes = () => {
+ const T = THEMES.map(t=>{ const on=CUR_THEME===t.id; return `<div class="card" style="cursor:pointer;${on?'border-color:'+t.a+';box-shadow:0 0 0 2px '+t.a:''}" onclick="setTheme('${t.id}')"><div style="display:flex;gap:6px;margin-bottom:12px"><span style="flex:1;height:44px;border-radius:10px;background:${t.a}"></span><span style="flex:1;height:44px;border-radius:10px;background:${t.s};border:1px solid var(--line)"></span></div><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h2 style="margin:0">${t.name}</h2>${on?`<span class="pill ok">${ic('check')} Tanlangan</span>`:''}</div><p class="sub" style="margin-top:4px">${on?'Hozir ishlatilmoqda':'Tanlash uchun bosing'}</p></div>`; }).join('');
+ return `<div class="themes-page"><div class="festive-banner"><div class="grow"><h1>Sayt ko‘rinishini tanlang</h1></div></div><p class="festive-sub">Mavzuni bosing — sayt darhol shu ranglarga o‘tadi</p>
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${T}</div>
+ <div class="card" style="margin-top:18px;max-width:560px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="stat-ic" style="margin:0">${ic('moon')}</div><div class="grow">Tungi rejim</div><button class="btn" onclick="toggleTheme();route()">${document.documentElement.dataset.theme==='dark'?'Yorug‘ rejim':'Tungi rejim'}</button></div></div>`;
+};
+(function(){
+ const flake = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70"><g stroke="#fca5a5" stroke-opacity=".28" stroke-width="1.3" fill="none" stroke-linecap="round"><path d="M35 10v50M10 35h50M16 16l38 38M54 16L16 54"/><path d="M29 13l6 6 6-6M29 57l6-6 6 6M13 29l6 6-6 6M57 29l-6 6 6 6"/></g></svg>');
+ const st=document.createElement('style');
+ st.textContent = `
+.ny body{color:#1f2937 !important;background:#fffbf5 url("data:image/svg+xml;utf8,${flake}") 0 0/70px 70px !important}
+.ny .sub,.ny p.sub{color:#6b7280 !important}
+.ny .nav a{color:#374151 !important}
+.ny .nav small{color:#991b1b !important}
+.ny .festive-banner{background:#7f1d1d !important;border:3px solid #eab308 !important;border-radius:20px !important;padding:20px 26px !important;background-image:repeating-linear-gradient(90deg,transparent 0 22px,rgba(234,179,8,.12) 22px 24px) !important}
+.ny .festive-banner h1{font-size:26px !important;letter-spacing:.2px}
+.ny .festive-banner h1::after{display:none !important}
+.ny .card{background:#fffefb !important;border:1.5px solid #fbcfe8 !important;border-top:5px solid #15803d !important;border-radius:18px !important;position:relative}
+.ny .card::after{content:"";position:absolute;top:10px;right:12px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 0 1.5px,#dc2626 2px)}
+.ny .card h2{color:#7f1d1d !important}
+.ny .stat-val{color:#7f1d1d !important}
+.ny h1{color:#7f1d1d !important}
+.ny #view{position:relative}
+.ny #view::before{top:0 !important;height:22px !important;background:radial-gradient(circle,#dc2626 4px,transparent 5px) 0 0/34px 22px repeat-x,radial-gradient(circle,#eab308 4px,transparent 5px) 17px 4px/34px 22px repeat-x,radial-gradient(circle,#15803d 4px,transparent 5px) 8px 12px/34px 22px repeat-x !important}
+#xmas{width:170px !important;right:24px !important;bottom:16px !important}
+#xmas svg{width:170px !important;height:auto !important}
+`;
+ document.head.appendChild(st);
+ const old=document.getElementById('xmas'); if(old) old.remove();
+ if(CUR_THEME==='newyear'){
+  const tree=document.createElement('div'); tree.id='xmas';
+  tree.innerHTML = '<svg viewBox="0 0 200 260" aria-hidden="true"><ellipse cx="100" cy="252" rx="72" ry="6" fill="#000" opacity=".08"/><rect x="92" y="222" width="16" height="26" rx="2" fill="#7c2d12"/><path d="M100 6l6 14 15 1-12 9 4 15-13-8-13 8 4-15-12-9 15-1z" fill="#eab308" stroke="#a16207" stroke-width="1"/><path d="M100 26 122 70h-10l22 36h-12l26 40H58l26-40H72l22-36H84z" fill="#166534"/><path d="M100 46 114 70h-28z" fill="#15803d" opacity=".7"/><path d="M100 96 128 150H72z" fill="#166534"/><path d="M100 118 118 150H82z" fill="#15803d" opacity=".6"/><path d="M40 160q30 14 60 0t60 0" fill="none" stroke="#eab308" stroke-width="2.5" stroke-dasharray="3 5" stroke-linecap="round"/><path d="M52 120q24 12 48 0t48 0" fill="none" stroke="#eab308" stroke-width="2" stroke-dasharray="3 5" stroke-linecap="round"/><circle cx="80" cy="62" r="5" fill="#dc2626"/><circle cx="80" cy="62" r="1.6" fill="#fff"/><circle cx="121" cy="100" r="5" fill="#fff"/><circle cx="121" cy="100" r="1.6" fill="#dc2626"/><circle cx="80" cy="128" r="5" fill="#eab308"/><circle cx="80" cy="128" r="1.6" fill="#fff"/><circle cx="118" cy="176" r="5" fill="#dc2626"/><circle cx="118" cy="176" r="1.6" fill="#fff"/><circle cx="84" cy="184" r="5" fill="#fff"/><circle cx="84" cy="184" r="1.6" fill="#eab308"/><circle cx="100" cy="210" r="4" fill="#eab308"/><rect x="40" y="232" width="34" height="22" rx="2" fill="#dc2626"/><rect x="55" y="232" width="4" height="22" fill="#eab308"/><rect x="128" y="238" width="30" height="16" rx="2" fill="#15803d"/><rect x="141" y="238" width="4" height="16" fill="#fff"/></svg>';
+  document.body.appendChild(tree);
+ }
+})();
 window.addEventListener('hashchange', route);
 route();
 </script>
