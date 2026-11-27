@@ -162,18 +162,19 @@ const PAGES = [
  {id:"schedule", t:"Dars jadvali", i:"cal"},
  {id:"homework", t:"Uy vazifalari", i:"task"},
  {id:"qa", t:"Savol-javob", i:"msg"},
+ {id:"notif", t:"Bildirishnomalar", i:"bell"},
  {id:"dict", t:"Lug‘at", i:"dict"},
  {id:"calc", t:"Kalkulyator", i:"calc"},
  {group:"Rollar"},
  {id:"parent", t:"Ota-ona", i:"family"},
  {id:"teacher", t:"O‘qituvchi", i:"teacher"},
  {id:"admin", t:"Developer panel", i:"shield"},
- {id:"settings", t:"Sozlamalar", i:"gear"},
+ {id:"settings", t:"Profil", i:"user"},
  {id:"login", t:"Kirish / Ro‘yxat", i:"logout"}
 ];
 
 function renderNav(active){
- $('#nav').innerHTML = PAGES.filter(p => p.id!=='admin' || (USER && USER.role==='dev')).map(p => p.group
+ $('#nav').innerHTML = (!USER ? [] : PAGES.filter(p => p.id!=='login' && (p.id!=='admin' || USER.role==='dev'))).map(p => p.group
   ? `<small>${p.group}</small>`
   : `<a href="#${p.id}" class="${p.id===active?'active':''}" onclick="closeSide()">${ic(p.i)}${p.t}</a>`).join('');
 }
@@ -217,11 +218,11 @@ const pages = {
  dashboard: () => `
   ${head('Salom, '+USER.name+'!', (USER.role==='dev'?'Dasturchi':USER.cls+' sinf')+' · Shaxsiy kabinet', `<span class="pill ok">${ic('flame')} 0 kunlik streak</span>`)}
   <div class="hero">
-   <div class="lvl">0</div>
+   <div class="lvl">${lvl().n}</div>
    <div class="grow" style="min-width:220px">
-    <div style="display:flex;justify-content:space-between;font-size:14px"><strong>Level 0</strong><span class="sub">0 / 100 XP</span></div>
-    <div class="bar"><span style="width:0%"></span></div>
-    <p class="sub" style="margin-top:8px">Keyingi levelgacha 100 XP kerak</p>
+    <div style="display:flex;justify-content:space-between;font-size:14px"><strong>Level ${lvl().n}</strong><span class="sub">${lvl().cur} / ${lvl().need} XP</span></div>
+    <div class="bar"><span style="width:${lvl().pct}%"></span></div>
+    <p class="sub" style="margin-top:8px">Keyingi levelgacha ${lvl().need-lvl().cur} XP kerak</p>
    </div>
   </div>
   <div class="grid" style="margin-bottom:22px">
@@ -331,7 +332,7 @@ function restartTest(){ qi=0; score=0; route(); }
 
 function route(){
  const id = (location.hash.slice(1) || 'home');
- const page = (id==='dashboard' && !USER) ? 'login' : (pages[id] ? id : 'home');
+ const page = !USER ? 'login' : (id==='login' ? 'dashboard' : (pages[id] ? id : 'home'));
  renderNav(page);
  $('#view').innerHTML = pages[page]();
  window.scrollTo(0,0);
@@ -617,6 +618,495 @@ pages.admin = () => {
  return `${head('Developer panel','Hammasini tahrirlash')}
   <div class="tabs">${ADM_TABS.map(([k,l])=>`<button class="${t===k?'on':''}" onclick="admTab('${k}')">${l}</button>`).join('')}</div>
   ${t==='users'?usersTab():t==='bank'?bankTab():t==='daily'?testsTab():t==='site'?siteTab():annTab()}`;
+};
+let CE = '', CR = false;
+function calcKey(b){
+ if(b==='C'){ CE=''; CR=false; }
+ else if(b==='⌫'){ if(CE==='Xato') CE=''; else CE=CE.slice(0,-1); }
+ else if(b==='='){
+  try{
+   const js = CE.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
+   if(!js || !/^[0-9+\-*/.() ]+$/.test(js)) throw 0;
+   const r = Function('return ('+js+')')();
+   if(!isFinite(r)) throw 0;
+   CE = String(Math.round(r*1e10)/1e10); CR = true;
+  }catch(e){ CE='Xato'; CR=false; }
+  const d=$('#calc-d'); if(d){ d.textContent=CE; }
+  return;
+ }
+ else {
+  if(CE==='Xato') CE='';
+  if(CR && /[0-9.]/.test(b)) CE='';
+  CR=false;
+  CE += b;
+ }
+ const d=$('#calc-d');
+ if(d){ d.textContent=CE||'0'; d.style.fontSize = CE.length>12 ? '20px' : '28px'; }
+}
+pages.calc = () => `${head('Kalkulyator','Oddiy hisob-kitob')}
+ <div class="card" style="max-width:340px">
+  <div id="calc-d" style="background:var(--surface);text-align:right;font-size:${CE.length>12?'20px':'28px'};font-weight:600;margin-bottom:12px;padding:16px;border-radius:12px;min-height:72px;overflow:hidden;word-break:break-all">${CE||'0'}</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${['C','⌫','÷','×','7','8','9','−','4','5','6','+','1','2','3','=','0','.'].map(b=>`<button class="btn" style="justify-content:center;padding:14px 0;${b==='='?'background:var(--accent);color:#fff;border-color:var(--accent)':''}" onclick="calcKey('${b}')">${b}</button>`).join('')}</div>
+ </div>`;
+let AUTH_MODE = 'login', AUTH_T = 't1';
+(function(){
+ const st=document.createElement('style');
+ st.textContent = `
+.auth{position:fixed;inset:0;z-index:50;min-height:100vh;width:100%;display:grid;place-items:center;padding:32px 16px;overflow-x:hidden;overflow-y:auto;border-radius:0;transition:background .5s,color .5s}
+.auth.t1{background:linear-gradient(135deg,#dbeafe,#fce7f3 55%,#fef3c7);color:#111827}
+.auth.t2{background:linear-gradient(135deg,#0b1020,#1e1b4b 55%,#3b0764);color:#f8fafc}
+.auth.t2 .sub,.auth.t2 label{color:#cbd5e1}
+.blob{position:absolute;border-radius:50%;filter:blur(50px);opacity:.55;animation:float 9s ease-in-out infinite;pointer-events:none}
+.auth{animation:bgshift 16s ease infinite}
+.auth.t1,.auth.t2{background-size:300% 300%}
+.auth::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.75) 1.2px,transparent 1.8px);background-size:46px 46px;opacity:.22;animation:drift 40s linear infinite;pointer-events:none}
+.auth.t1::before{background-image:radial-gradient(rgba(37,99,235,.35) 1.2px,transparent 1.8px)}
+.auth::after{content:"";position:absolute;width:520px;height:520px;left:50%;top:50%;margin:-260px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.28),transparent 70%);animation:orbit 20s ease-in-out infinite;pointer-events:none}
+.auth.t1::after{background:radial-gradient(circle,rgba(244,114,182,.25),transparent 70%)}
+.blob:nth-of-type(2){animation-duration:12s}
+@keyframes bgshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes drift{to{background-position:46px 92px}}
+@keyframes orbit{0%,100%{transform:translate(-220px,-80px) scale(1)}50%{transform:translate(220px,90px) scale(1.2)}}
+@keyframes float{50%{transform:translate(12px,-18px)}}
+.glass{position:relative;z-index:1;width:min(440px,100%);padding:30px;border-radius:24px;background:rgba(255,255,255,.7);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.8);box-shadow:0 24px 60px rgba(30,41,59,.15);animation:up .6s cubic-bezier(.2,.8,.2,1) both}
+.auth.t2 .glass{background:rgba(15,23,42,.6);border-color:rgba(255,255,255,.12);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.auth input,.auth select{background:rgba(255,255,255,.85)}
+.auth.t2 input,.auth.t2 select{background:rgba(255,255,255,.08);color:#f8fafc;border-color:rgba(255,255,255,.18)}
+.auth input:-webkit-autofill,.auth input:-webkit-autofill:hover,.auth input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px rgba(255,255,255,.9) inset !important;-webkit-text-fill-color:#111827 !important;caret-color:#111827;transition:background-color 9999s ease-in-out 0s}
+.auth.t2 input:-webkit-autofill,.auth.t2 input:-webkit-autofill:hover,.auth.t2 input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #1e2538 inset !important;-webkit-text-fill-color:#f8fafc !important;caret-color:#f8fafc}
+.auth input:focus,.auth select:focus{outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.2)}
+.seg{display:flex;background:rgba(15,23,42,.06);border-radius:12px;padding:4px;margin:20px 0}
+.auth.t2 .seg{background:rgba(255,255,255,.08)}
+.seg button{flex:1;border:0;background:transparent;padding:9px;border-radius:9px;font:inherit;font-size:14px;cursor:pointer;color:inherit;opacity:.7;transition:all .25s}
+.seg button.on{background:#fff;opacity:1;box-shadow:0 4px 12px rgba(0,0,0,.08);color:#111827}
+.auth.t2 .seg button.on{background:#334155;color:#fff}
+.feats{display:grid;gap:8px;margin-bottom:18px}
+.feat{display:flex;align-items:center;gap:10px;font-size:13px;opacity:.85;animation:up .5s both}
+.feat:nth-child(2){animation-delay:.1s}.feat:nth-child(3){animation-delay:.2s}
+.feat .ic{color:#7c3aed}
+.err{color:#dc2626;font-size:13px;min-height:18px;margin-bottom:8px}
+.auth.t2 .err{color:#fca5a5}
+.btn-main{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border:0;border-radius:12px;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#fff;font:inherit;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(79,70,229,.35)}
+.btn-main:active{transform:scale(.97)}
+.auth-top{position:absolute;top:16px;right:16px;z-index:2;display:flex;gap:6px}
+.tbtn{width:40px;height:40px;border-radius:12px;border:1px solid rgba(127,127,127,.25);background:rgba(255,255,255,.6);color:inherit;display:grid;place-items:center;cursor:pointer;transition:all .2s}
+.tbtn.on{background:#111827;color:#fff;border-color:#111827}
+.auth.t2 .tbtn{background:rgba(255,255,255,.08)}
+.auth.t2 .tbtn.on{background:#f8fafc;color:#0f172a}
+.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.reg-grid{grid-template-columns:1fr}}
+`;
+ document.head.appendChild(st);
+})();
+function authInner(){
+ const isLogin = AUTH_MODE==='login';
+ const brand = `<div style="display:flex;align-items:center;gap:12px"><div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:grid;place-items:center;color:#fff">${ic('logo',22)}</div><div><h1 style="font-size:24px">${CONTENT.brand}</h1><p class="sub">Bilim bellashuvi platformasi</p></div></div>`;
+ const tabs = `<div class="seg"><button class="${isLogin?'on':''}" onclick="setAuthMode('login')">Kirish</button><button class="${!isLogin?'on':''}" onclick="setAuthMode('reg')">Ro‘yxatdan o‘tish</button></div>`;
+ if(isLogin){
+  return brand + tabs +
+  `<div class="feats">${[['bolt','XP va level tizimi'],['trophy','Haftalik TOP 10 reyting'],['bot','AI yordamchi va kunlik testlar']].map(([i,t])=>`<div class="feat">${ic(i,16)} ${t}</div>`).join('')}</div>
+  <div class="field"><label>Email yoki username</label><input id="l-email" placeholder="ism@maktab.uz"></div>
+  <div class="field"><label>Parol</label><input id="l-pass" type="password" placeholder="••••••••"></div>
+  <div id="err" class="err"></div>
+  <button class="btn-main" onclick="doLogin()">Kirish ${ic('play',16)}</button>`;
+ }
+ return brand + tabs +
+  `<div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism"></div><div class="field"><label>Familiya</label><input id="r-fam"></div></div>
+  <div class="field"><label>Username</label><input id="r-user"></div>
+  <div class="field"><label>Sinf</label><select id="r-sinf">${['8-A','8-B','9-A','9-B','10-A','10-B','11-A','11-B'].map(s=>`<option>${s}</option>`).join('')}</select></div>
+  <div class="field"><label>Email</label><input id="r-email" placeholder="ism@maktab.uz"></div>
+  <div class="reg-grid"><div class="field"><label>Parol</label><input id="r-pass" type="password"></div><div class="field"><label>Tasdiqlash</label><input id="r-pass2" type="password"></div></div>
+  <div id="err" class="err"></div>
+  <button class="btn-main" onclick="doReg()">Ro‘yxatdan o‘tish ${ic('play',16)}</button>`;
+}
+function setAuthMode(m){ AUTH_MODE=m; $('#authcard').innerHTML=authInner(); }
+function setAuthTheme(t){
+ AUTH_T=t; const a=$('#auth'); if(a) a.className='auth '+t;
+ document.querySelectorAll('.tbtn').forEach(b=>b.classList.toggle('on', b.getAttribute('onclick').includes("'"+t+"'")));
+}
+pages.login = () => `<div class="auth ${AUTH_T}" id="auth">
+  <div class="blob" style="width:320px;height:320px;background:#60a5fa;left:-80px;top:-80px"></div>
+  <div class="blob" style="width:280px;height:280px;background:#f472b6;right:-60px;bottom:-60px;animation-delay:-3s"></div>
+  <div class="auth-top">
+   <button class="tbtn ${AUTH_T==='t1'?'on':''}" onclick="setAuthTheme('t1')" aria-label="Yorug‘">${ic('sun',18)}</button>
+   <button class="tbtn ${AUTH_T==='t2'?'on':''}" onclick="setAuthTheme('t2')" aria-label="Tungi">${ic('moon',18)}</button>
+  </div>
+  <div class="glass" id="authcard">${authInner()}</div>
+ </div>`;
+(function(){
+ const sp = document.querySelector('svg[width="0"]');
+ if(!sp) return;
+ const S = 'fill="currentColor" fill-opacity=".16"';
+ sp.innerHTML = `
+ <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1z" ${S}/></symbol>
+ <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4" ${S}/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></symbol>
+ <symbol id="i-test" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="3" ${S}/><path d="M9 9.5h6M9 13.5h6M9 17.5h3"/></symbol>
+ <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4.5h10v4.2a5 5 0 0 1-10 0z" ${S}/><path d="M7 6.5H4.5a2.5 2.5 0 0 0 2.6 3M17 6.5h2.5a2.5 2.5 0 0 1-2.6 3M12 13.7v3.3M8.5 20.5h7M9.5 17h5"/></symbol>
+ <symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="15" r="5.5" ${S}/><path d="M8.2 3.5 10.5 9.5h3l2.3-6"/></symbol>
+ <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4.5" y="7.5" width="15" height="11.5" rx="3.5" ${S}/><path d="M12 3.8v3.7"/><circle cx="12" cy="3.2" r="1" fill="currentColor"/><circle cx="9.2" cy="12.8" r="1.4" fill="currentColor"/><circle cx="14.8" cy="12.8" r="1.4" fill="currentColor"/><path d="M9.5 16.5h5"/></symbol>
+ <symbol id="i-family" viewBox="0 0 24 24"><circle cx="8.5" cy="8.5" r="3.2" ${S}/><path d="M3 19.5c.6-3 2.6-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="17" cy="9.5" r="2.3"/><path d="M15.2 15.1c2.6 0 4.5 1.2 5.3 4.2"/></symbol>
+ <symbol id="i-teacher" viewBox="0 0 24 24"><path d="M12 4 2.8 8.6 12 13.2l9.2-4.6z" ${S}/><path d="M6.5 11v4.6c0 1.4 2.5 3 5.5 3s5.5-1.6 5.5-3V11M21.2 8.6v5"/></symbol>
+ <symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 2.5l1.4 2.6 2.9-.6.6 2.9 2.6 1.4-1.4 2.6 1.4 2.6-2.6 1.4-.6 2.9-2.9-.6L12 21.5l-1.4-2.6-2.9.6-.6-2.9-2.6-1.4 1.4-2.6-1.4-2.6 2.6-1.4.6-2.9 2.9.6z" ${S}/><circle cx="12" cy="12" r="3"/></symbol>
+ <symbol id="i-book" viewBox="0 0 24 24"><path d="M4.5 5.5A2.5 2.5 0 0 1 7 3h12.5v15H7a2.5 2.5 0 0 0-2.5 2.5z" ${S}/><path d="M4.5 5.5v15"/></symbol>
+ <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" ${S}/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="8.5" cy="14.5" r="0.9" fill="currentColor"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 5.8v5.5c0 4.6 3.2 8.2 7.5 9.7 4.3-1.5 7.5-5.1 7.5-9.7V5.8z" ${S}/><path d="M8.8 12.2l2.2 2.2 4.2-4.4"/></symbol>
+ <symbol id="i-chart" viewBox="0 0 24 24"><rect x="4" y="12" width="3.5" height="8" rx="1" ${S}/><rect x="10.3" y="7" width="3.5" height="13" rx="1" ${S}/><rect x="16.5" y="3.5" width="3.5" height="16.5" rx="1" ${S}/></symbol>
+ <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.2 2.8 5 13.5h6.2l-1 7.7 8.6-11.2h-6.4z" ${S}/></symbol>
+ <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21.2c3.6 0 6.3-2.6 6.3-6.1 0-2.6-1.5-4.5-2.8-6.2-.4 1.9-1.2 3-2.4 3.5.3-3.8-.7-7.1-3.8-9-.2 2.7-1.7 4.3-3.2 6.1C5.9 11.5 5.7 13 5.7 15c0 3.5 2.7 6.2 6.3 6.2z" ${S}/></symbol>
+ <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2z" ${S}/></symbol>
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" ${S}/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></symbol>
+ <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+ <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2H4.5z" ${S}/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+ <symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V16H6.5A2.5 2.5 0 0 1 4 13.5z" ${S}/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" fill-opacity=".2"/></symbol>
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.5-4.5"/></symbol>
+ <symbol id="i-book2" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5" ${S}/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+ <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6.5" width="13" height="11" rx="2.5" ${S}/><path d="M16 10.5l5-3v9l-5-3"/></symbol>
+ <symbol id="i-task" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5" ${S}/><path d="M8.5 9.5l1.6 1.6 3-3M8.5 15.5l1.6 1.6 3-3M14.5 10h2.5M14.5 16h2.5"/></symbol>
+ <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 3.5h14v11.5l-4.5 4.5H5z" ${S}/><path d="M14.5 20.5V15.5H19.5M8.5 8.5h7M8.5 12h4"/></symbol>
+ <symbol id="i-news" viewBox="0 0 24 24"><path d="M4 6h12.5v13.5H6.5A2.5 2.5 0 0 1 4 17z" ${S}/><path d="M16.5 10H20v7.5a2 2 0 0 1-2 2M7.5 10h6M7.5 14h6"/></symbol>
+ <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5" ${S}/><path d="M8.5 7.5h7v3h-7zM8.5 13.5h1.5M11.8 13.5h1.5M15 13.5h1.5M8.5 17h1.5M11.8 17h1.5M15 17h1.5"/></symbol>
+ <symbol id="i-dict" viewBox="0 0 24 24"><path d="M3.5 5.5A2.5 2.5 0 0 1 6 3h5.5v17H6a2.5 2.5 0 0 0-2.5 2.5z" ${S}/><path d="M20.5 5.5A2.5 2.5 0 0 0 18 3h-5.5v17H18a2.5 2.5 0 0 1 2.5 2.5z"/></symbol>
+ <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H6.5A2 2 0 0 0 4.5 6.5v11a2 2 0 0 0 2 2H14"/><path d="M10 12h10.5M17 8.5l3.5 3.5-3.5 3.5"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" ${S}/><path d="M12 7.5V12h3.5"/></symbol>
+ <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.5 6 .8-4.4 4.1 1.1 5.9L12 16.7l-5.3 3.1 1.1-5.9L3.4 9.8l6-.8z" fill="currentColor" fill-opacity=".2"/></symbol>
+ <symbol id="i-logo" viewBox="0 0 24 24"><rect x="4" y="5" width="6.5" height="14" rx="2" fill="currentColor"/><rect x="13.5" y="5" width="6.5" height="14" rx="2" fill="currentColor" fill-opacity=".5"/></symbol>
+ `;
+})();
+(function(){
+ const st=document.createElement('style');
+ st.textContent = `
+.gender{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 12px}
+.gbtn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px;border-radius:14px;border:1.5px solid rgba(127,127,127,.25);background:rgba(255,255,255,.5);color:inherit;cursor:pointer;font:inherit;transition:all .25s}
+.auth.t2 .gbtn{background:rgba(255,255,255,.05)}
+.gbtn:hover{transform:translateY(-2px)}
+.gbtn.on{border-color:#7c3aed;background:rgba(124,58,237,.14);transform:translateY(-2px);box-shadow:0 10px 24px rgba(124,58,237,.22)}
+.pwbar{height:6px;border-radius:9px;background:rgba(127,127,127,.2);overflow:hidden;margin:6px 0 4px}
+.pwbar span{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);transition:width .4s}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:12px;margin:8px 0 12px}
+.rules span{opacity:.55;transition:all .3s}
+.rules .okr{opacity:1;color:#16a34a;font-weight:600}
+.navrow{display:flex;gap:8px;margin-top:6px}
+.navrow .btn-main{flex:1}
+.back-btn{padding:13px 16px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:transparent;color:inherit;font:inherit;cursor:pointer}
+.code{letter-spacing:.5em;font-size:22px;text-align:center;font-weight:700}
+.terms{display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:10px 0;cursor:pointer}
+`;
+ document.head.appendChild(st);
+})();
+const GENDER = [['m','Erkak','M10 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10zM14 10l6-6M15 4h5v5'],['f','Ayol','M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 13v8M9 18h6']];
+const SINFS = ['8-A','8-B','9-A','9-B','10-A','10-B','11-A','11-B'];
+const PW_RULES = [['8+ belgi', p=>p.length>=8], ['Katta va kichik harf', p=>/[A-Z]/.test(p)&&/[a-z]/.test(p)], ['Raqam', p=>/\d/.test(p)], ['Maxsus belgi', p=>/[^A-Za-z0-9]/.test(p)]];
+function pwScore(p){ return PW_RULES.reduce((s,r)=>s+(r[1](p)?1:0),0); }
+function freshReg(){ return {step:1,g:'',ism:'',fam:'',user:'',email:'',sinf:'8-A',pass:'',pass2:'',terms:false,input:'',sent:'',tries:0}; }
+let REG = freshReg();
+function regCollect(){
+ const map={ism:'r-ism',fam:'r-fam',user:'r-user',email:'r-email',sinf:'r-sinf',pass:'r-pass',pass2:'r-pass2',input:'r-code'};
+ for(const k in map){ const e=$('#'+map[k]); if(e) REG[k]=e.value; }
+ const t=$('#r-terms'); if(t) REG.terms=t.checked;
+}
+function regRender(){ $('#authcard').innerHTML = authInner(); }
+function regPw(){
+ const p=$('#r-pass').value;
+ $('#pw-m').style.width = (pwScore(p)*25)+'%';
+ PW_RULES.forEach((r,i)=>$('#pr'+i).classList.toggle('okr', r[1](p)));
+}
+function regValidate(){
+ if(REG.step===1){
+  if(!REG.g) return err('Jinsni tanlang');
+  if(!REG.ism.trim() || !REG.fam.trim()) return err('Ism va familiyani kiriting');
+ }
+ if(REG.step===2){
+  const u=REG.user.trim().toLowerCase();
+  if(!/^[a-z0-9_]{4,20}$/.test(u)) return err('Username 4–20 belgi: lotin harf, raqam yoki _');
+  if(USERS.some(x=>x.username===u)) return err('Bu username band');
+  if(!/^\S+@\S+\.\S+$/.test(REG.email.trim())) return err('Email noto‘g‘ri');
+ }
+ if(REG.step===3){
+  if(pwScore(REG.pass)<4) return err('Parol barcha talablarga javob berishi kerak');
+  if(REG.pass!==REG.pass2) return err('Parollar mos emas');
+  if(!REG.terms) return err('Shartlarga rozilik bering');
+ }
+ return true;
+}
+function regNext(){
+ regCollect();
+ if(!regValidate()) return;
+ if(REG.step===3){
+  REG.step=4; REG.sent=String(100000+Math.floor(Math.random()*900000)); REG.input='';
+  regRender(); toast('Tasdiqlash kodi yuborildi'); return;
+ }
+ if(REG.step===4){
+  if(REG.input!==REG.sent){
+   REG.tries++;
+   if(REG.tries>=5){ REG=freshReg(); regRender(); return err('Ko‘p urinish. Qaytadan boshlang'); }
+   return err('Kod noto‘g‘ri');
+  }
+  return createAccount();
+ }
+ REG.step++; regRender();
+}
+function regStepHtml(){
+ const steps=['Shaxsiy','Hisob','Xavfsizlik','Tasdiqlash'];
+ const prog = `<div style="display:flex;gap:6px;margin:18px 0 6px">${steps.map((_,i)=>`<span style="flex:1;height:4px;border-radius:9px;background:${i<REG.step?'linear-gradient(90deg,#2563eb,#7c3aed)':'rgba(127,127,127,.25)'};transition:background .4s"></span>`).join('')}</div><p class="sub" style="font-size:12px">${REG.step}/4 · ${steps[REG.step-1]}</p>`;
+ let b='';
+ if(REG.step===1){
+  b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
+  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
+ } else if(REG.step===2){
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
+  <div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>`;
+ } else if(REG.step===3){
+  b = `<div class="field"><label>Parol</label><input id="r-pass" type="password" value="${REG.pass}" oninput="regPw()"></div>
+  <div class="pwbar"><span id="pw-m" style="width:${pwScore(REG.pass)*25}%"></span></div>
+  <div class="rules">${PW_RULES.map((r,i)=>`<span id="pr${i}" class="${r[1](REG.pass)?'okr':''}">${r[0]}</span>`).join('')}</div>
+  <div class="field"><label>Parolni tasdiqlang</label><input id="r-pass2" type="password" value="${REG.pass2}"></div>
+  <label class="terms"><input type="checkbox" id="r-terms" ${REG.terms?'checked':''} style="width:auto;margin-top:3px"><span>Maxfiylik siyosati va foydalanish shartlariga roziman</span></label>`;
+ } else {
+  b = `<p class="sub" style="margin-bottom:8px">Tasdiqlash kodi yuborildi. Demo rejimda kod quyida ko‘rsatiladi:</p>
+  <div class="pill" style="display:inline-block;margin-bottom:14px;font-weight:600">Demo kod: ${REG.sent}</div>
+  <div class="field"><label>6 xonali kod</label><input id="r-code" class="code" maxlength="6" inputmode="numeric" value="${REG.input}" placeholder="000000"></div>`;
+ }
+ const back = REG.step>1 ? `<button class="back-btn" onclick="regCollect();REG.step--;regRender()">Orqaga</button>` : '';
+ const label = REG.step===4 ? 'Tasdiqlash va yaratish' : 'Davom etish';
+ return prog + b + `<div id="err" class="err"></div><div class="navrow">${back}<button class="btn-main" onclick="regNext()">${label} ${ic('play',16)}</button></div>`;
+}
+function authInner(){
+ const isLogin = AUTH_MODE==='login';
+ const brand = `<div style="display:flex;align-items:center;gap:12px"><div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:grid;place-items:center;color:#fff">${ic('logo',22)}</div><div><h1 style="font-size:24px">${CONTENT.brand}</h1><p class="sub">Bilim bellashuvi platformasi</p></div></div>`;
+ const tabs = `<div class="seg"><button class="${isLogin?'on':''}" onclick="setAuthMode('login')">Kirish</button><button class="${!isLogin?'on':''}" onclick="setAuthMode('reg')">Ro‘yxatdan o‘tish</button></div>`;
+ if(isLogin){
+  return brand + tabs +
+  `<div class="feats">${[['bolt','XP va level tizimi'],['trophy','Haftalik TOP 10 reyting'],['bot','AI yordamchi va kunlik testlar']].map(([i,t])=>`<div class="feat">${ic(i,16)} ${t}</div>`).join('')}</div>
+  <div class="field"><label>Email yoki username</label><input id="l-email" placeholder="ism@maktab.uz"></div>
+  <div class="field"><label>Parol</label><input id="l-pass" type="password" placeholder="••••••••"></div>
+  <div id="err" class="err"></div>
+  <button class="btn-main" onclick="doLogin()">Kirish ${ic('play',16)}</button>`;
+ }
+ return brand + tabs + regStepHtml();
+}
+function createAccount(){
+ const u={username:REG.user.trim().toLowerCase(), name:REG.ism.trim(), fam:REG.fam.trim(), cls:REG.sinf, email:REG.email.trim(), pass:REG.pass, g:REG.g, role:'student', xp:0, level:0};
+ USERS.push(u); USER=u; REG=freshReg();
+ location.hash='dashboard'; route(); toast('Xush kelibsiz, '+u.name+'!');
+}
+function logoutUser(){ USER=null; REG=freshReg(); location.hash='login'; route(); toast('Tizimdan chiqdingiz'); }
+pages.settings = () => `${head('Profil','Shaxsiy ma’lumotlar va sozlamalar')}
+ <div class="card" style="max-width:560px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <div class="avatar" style="width:64px;height:64px;font-size:22px">${USER.name[0]}</div>
+  <div class="grow"><h2 style="margin:0">${USER.name} ${USER.fam}</h2><p class="sub">@${USER.username} · ${USER.cls} · ${USER.role==='dev'?'Developer':'O‘quvchi'}</p></div>
+  <button class="btn" onclick="logoutUser()">${ic('logout')} Chiqish</button>
+ </div>
+ <div class="card" style="max-width:560px">
+  <div class="row" style="border:0"><div class="grow">Mavzu</div><button class="btn" onclick="toggleTheme()">${ic('moon')} O‘zgartirish</button></div>
+  <div class="row" style="border:0"><div class="grow">Bildirishnomalar</div><span class="pill ok">Yoqilgan</span></div>
+ </div>`;
+(function(){
+ const sp=document.querySelector('svg[width="0"]');
+ if(sp) sp.insertAdjacentHTML('beforeend','<symbol id="i-friend" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5" fill="currentColor" fill-opacity=".16"/><path d="M2.5 20c.7-3.4 3.2-5.2 6.5-5.2s5.8 1.8 6.5 5.2"/><path d="M18 8v6M15 11h6"/></symbol>');
+})();
+USERS.forEach(u=>{ if(!u.code) u.code = u.role==='dev' ? 'KSDEV01' : 'KS'+Math.random().toString(36).slice(2,6).toUpperCase(); if(!u.notifs) u.notifs=[]; });
+function freshReg(){ return {step:1,g:'',ism:'',fam:'',user:'',email:'',sinf:'8-A',friend:'',pass:'',pass2:'',terms:false,input:'',sent:'',tries:0}; }
+function findFriend(q){ q=(q||'').trim(); if(!q) return null; const l=q.toLowerCase(), U=q.toUpperCase(); return USERS.find(x=>x.username===l || (x.code && x.code===U)) || null; }
+function regCollect(){
+ const map={ism:'r-ism',fam:'r-fam',user:'r-user',email:'r-email',sinf:'r-sinf',friend:'r-friend',pass:'r-pass',pass2:'r-pass2',input:'r-code'};
+ for(const k in map){ const e=$('#'+map[k]); if(e) REG[k]=e.value; }
+ const t=$('#r-terms'); if(t) REG.terms=t.checked;
+}
+function regValidate(){
+ if(REG.step===1){
+  if(!REG.g) return err('Jinsni tanlang');
+  if(!REG.ism.trim() || !REG.fam.trim()) return err('Ism va familiyani kiriting');
+ }
+ if(REG.step===2){
+  const u=REG.user.trim().toLowerCase();
+  if(!/^[a-z0-9_]{4,20}$/.test(u)) return err('Username 4–20 belgi: lotin harf, raqam yoki _');
+  if(USERS.some(x=>x.username===u)) return err('Bu username band');
+  if(!/^\S+@\S+\.\S+$/.test(REG.email.trim())) return err('Email noto‘g‘ri');
+  if(REG.friend.trim() && !findFriend(REG.friend)) return err('Bunday do‘st kodi yoki username topilmadi');
+ }
+ if(REG.step===3){
+  if(pwScore(REG.pass)<4) return err('Parol barcha talablarga javob berishi kerak');
+  if(REG.pass!==REG.pass2) return err('Parollar mos emas');
+  if(!REG.terms) return err('Shartlarga rozilik bering');
+ }
+ return true;
+}
+function regStepHtml(){
+ const steps=['Shaxsiy','Hisob','Xavfsizlik','Tasdiqlash'];
+ const prog = `<div style="display:flex;gap:6px;margin:18px 0 6px">${steps.map((_,i)=>`<span style="flex:1;height:4px;border-radius:9px;background:${i<REG.step?'linear-gradient(90deg,#2563eb,#7c3aed)':'rgba(127,127,127,.25)'};transition:background .4s"></span>`).join('')}</div><p class="sub" style="font-size:12px">${REG.step}/4 · ${steps[REG.step-1]}</p>`;
+ let b='';
+ if(REG.step===1){
+  b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
+  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
+ } else if(REG.step===2){
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
+  <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  <div class="field"><label>${ic('friend',16)} Do‘st kodi</label><input id="r-friend" value="${REG.friend}" placeholder="Kod yoki username"></div></div>`;
+ } else if(REG.step===3){
+  b = `<div class="field"><label>Parol</label><input id="r-pass" type="password" value="${REG.pass}" oninput="regPw()"></div>
+  <div class="pwbar"><span id="pw-m" style="width:${pwScore(REG.pass)*25}%"></span></div>
+  <div class="rules">${PW_RULES.map((r,i)=>`<span id="pr${i}" class="${r[1](REG.pass)?'okr':''}">${r[0]}</span>`).join('')}</div>
+  <div class="field"><label>Parolni tasdiqlang</label><input id="r-pass2" type="password" value="${REG.pass2}"></div>
+  <label class="terms"><input type="checkbox" id="r-terms" ${REG.terms?'checked':''} style="width:auto;margin-top:3px"><span>Maxfiylik siyosati va foydalanish shartlariga roziman</span></label>`;
+ } else {
+  b = `<p class="sub" style="margin-bottom:8px">Tasdiqlash kodi yuborildi. Demo rejimda kod quyida ko‘rsatiladi:</p>
+  <div class="pill" style="display:inline-block;margin-bottom:14px;font-weight:600">Demo kod: ${REG.sent}</div>
+  <div class="field"><label>6 xonali kod</label><input id="r-code" class="code" maxlength="6" inputmode="numeric" value="${REG.input}" placeholder="000000"></div>`;
+ }
+ const back = REG.step>1 ? `<button class="back-btn" onclick="regCollect();REG.step--;regRender()">Orqaga</button>` : '';
+ const label = REG.step===4 ? 'Tasdiqlash va yaratish' : 'Davom etish';
+ return prog + b + `<div id="err" class="err"></div><div class="navrow">${back}<button class="btn-main" onclick="regNext()">${label} ${ic('play',16)}</button></div>`;
+}
+function createAccount(){
+ const code='KS'+Math.random().toString(36).slice(2,6).toUpperCase();
+ const u={username:REG.user.trim().toLowerCase(), code, name:REG.ism.trim(), fam:REG.fam.trim(), cls:REG.sinf, email:REG.email.trim(), pass:REG.pass, g:REG.g, role:'student', xp:0, level:0, notifs:[]};
+ const f = REG.friend.trim() ? findFriend(REG.friend) : null;
+ if(f){ f.notifs = (f.notifs||[]).concat([{type:'friend', t:'Yangi do‘st!', d:`${u.name} ${u.fam} (@${u.username}) sizning taklifingiz orqali qo‘shildi`, time:new Date().toLocaleString('uz-UZ'), read:false}]); }
+ USERS.push(u); USER=u; REG=freshReg();
+ location.hash='dashboard'; route(); toast('Xush kelibsiz, '+u.name+'!');
+}
+function readAll(){ (USER.notifs||[]).forEach(n=>n.read=true); route(); }
+pages.notif = () => {
+ const list=(USER.notifs||[]).slice().reverse();
+ const unread=list.filter(n=>!n.read).length;
+ if(!list.length) return `${head('Bildirishnomalar','Hozircha yo‘q')}<div class="card"><p class="sub">Do‘stlaringiz sizning kodingiz orqali qo‘shilsa, bu yerda xabar chiqadi.</p></div>`;
+ return `${head('Bildirishnomalar', unread ? unread+' ta yangi xabar' : 'Hammasi o‘qilgan')}<div class="card">${list.map(n=>`<div class="row" style="${n.read?'opacity:.6':''}"><div class="stat-ic" style="margin:0">${ic(n.type==='friend'?'friend':'bell')}</div><div class="grow"><div style="font-size:14px;font-weight:600">${n.t}</div><div class="sub" style="font-size:13px">${n.d}</div><div class="sub" style="font-size:11px">${n.time}</div></div>${n.read?'':'<span class="pill ok">Yangi</span>'}</div>`).join('')}</div>
+ <div style="margin-top:14px"><button class="btn" onclick="readAll()">${ic('check')} Hammasini o‘qilgan deb belgilash</button></div>`;
+};
+pages.settings = () => `${head('Profil','Shaxsiy ma’lumotlar va sozlamalar')}
+ <div class="card" style="max-width:560px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <div class="avatar" style="width:64px;height:64px;font-size:22px">${USER.name[0]}</div>
+  <div class="grow"><h2 style="margin:0">${USER.name} ${USER.fam}</h2><p class="sub">@${USER.username} · ${USER.cls} · ${USER.role==='dev'?'Developer':'O‘quvchi'}</p></div>
+  <button class="btn" onclick="logoutUser()">${ic('logout')} Chiqish</button>
+ </div>
+ <div class="card" style="max-width:560px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+  <div class="stat-ic" style="margin:0">${ic('friend')}</div>
+  <div class="grow"><div class="sub" style="font-size:12px">Do‘st taklif kodingiz</div><div style="font-size:20px;font-weight:700;letter-spacing:.12em">${USER.code||'—'}</div><div class="sub" style="font-size:12px">Do‘stingiz ro‘yxatdan o‘tishda shu kodni yoki username’ingizni kiritsa, sizga bildirishnoma keladi</div></div>
+ </div>
+ <div class="card" style="max-width:560px">
+  <div class="row" style="border:0"><div class="grow">Mavzu</div><button class="btn" onclick="toggleTheme()">${ic('moon')} O‘zgartirish</button></div>
+  <div class="row" style="border:0"><div class="grow">Bildirishnomalar</div><span class="pill ok">${(USER.notifs||[]).filter(n=>!n.read).length} ta yangi</span></div>
+ </div>`;
+function findUserByName(u){ const l=(u||'').trim().replace(/^@/,'').toLowerCase(); return USERS.find(x=>x.username===l) || null; }
+function regValidate(){
+ if(REG.step===1){
+  if(!REG.g) return err('Jinsni tanlang');
+  if(!REG.ism.trim() || !REG.fam.trim()) return err('Ism va familiyani kiriting');
+ }
+ if(REG.step===2){
+  const u=REG.user.trim().toLowerCase();
+  if(!/^[a-z0-9_]{4,20}$/.test(u)) return err('Username 4–20 belgi: lotin harf, raqam yoki _');
+  if(USERS.some(x=>x.username===u)) return err('Bu username band');
+  if(!/^\S+@\S+\.\S+$/.test(REG.email.trim())) return err('Email noto‘g‘ri');
+  const f=findUserByName(REG.friend);
+  if(!f) return err('Do‘stingizning username’i topilmadi');
+  if(f.username===u) return err('O‘zingizni do‘st qilib bo‘lmaydi');
+ }
+ if(REG.step===3){
+  if(pwScore(REG.pass)<4) return err('Parol barcha talablarga javob berishi kerak');
+  if(REG.pass!==REG.pass2) return err('Parollar mos emas');
+  if(!REG.terms) return err('Shartlarga rozilik bering');
+ }
+ return true;
+}
+function regNext(){
+ regCollect();
+ if(!regValidate()) return;
+ if(REG.step===3){
+  const f=findUserByName(REG.friend);
+  REG.sent=String(100000+Math.floor(Math.random()*900000)); REG.input='';
+  f.notifs=(f.notifs||[]).concat([{type:'friend', t:'Ro‘yxatdan o‘tish so‘rovi', d:`@${REG.user.trim().toLowerCase()} (${REG.ism.trim()} ${REG.fam.trim()}) sizni do‘st sifatida ko‘rsatib ro‘yxatdan o‘tmoqchi. Tasdiqlash kodi: ${REG.sent}`, time:new Date().toLocaleString('uz-UZ'), read:false}]);
+  REG.step=4; regRender(); toast('Kod @'+f.username+' bildirishnomasiga yuborildi'); return;
+ }
+ if(REG.step===4){
+  if(REG.input!==REG.sent){
+   REG.tries++;
+   if(REG.tries>=5){ REG=freshReg(); regRender(); return err('Ko‘p urinish. Qaytadan boshlang'); }
+   return err('Kod noto‘g‘ri');
+  }
+  return createAccount();
+ }
+ REG.step++; regRender();
+}
+function regStepHtml(){
+ const steps=['Shaxsiy','Hisob','Xavfsizlik','Tasdiqlash'];
+ const prog = `<div style="display:flex;gap:6px;margin:18px 0 6px">${steps.map((_,i)=>`<span style="flex:1;height:4px;border-radius:9px;background:${i<REG.step?'linear-gradient(90deg,#2563eb,#7c3aed)':'rgba(127,127,127,.25)'};transition:background .4s"></span>`).join('')}</div><p class="sub" style="font-size:12px">${REG.step}/4 · ${steps[REG.step-1]}</p>`;
+ let b='';
+ if(REG.step===1){
+  b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
+  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
+ } else if(REG.step===2){
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
+  <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  <div class="field"><label>${ic('friend',16)} Do‘stingiz username</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div></div>
+  <p class="sub" style="font-size:12px;margin-top:-4px">Tasdiqlash kodi shu do‘stingizning bildirishnomasiga yuboriladi.</p>`;
+ } else if(REG.step===3){
+  b = `<div class="field"><label>Parol</label><input id="r-pass" type="password" value="${REG.pass}" oninput="regPw()"></div>
+  <div class="pwbar"><span id="pw-m" style="width:${pwScore(REG.pass)*25}%"></span></div>
+  <div class="rules">${PW_RULES.map((r,i)=>`<span id="pr${i}" class="${r[1](REG.pass)?'okr':''}">${r[0]}</span>`).join('')}</div>
+  <div class="field"><label>Parolni tasdiqlang</label><input id="r-pass2" type="password" value="${REG.pass2}"></div>
+  <label class="terms"><input type="checkbox" id="r-terms" ${REG.terms?'checked':''} style="width:auto;margin-top:3px"><span>Maxfiylik siyosati va foydalanish shartlariga roziman</span></label>`;
+ } else {
+  b = `<p class="sub" style="margin-bottom:14px">Do‘stingiz <b>@${REG.friend.replace(/^@/,'')}</b> bildirishnomasiga 6 xonali kod yuborildi. Kodni o‘sha do‘stingizdan so‘rang va quyiga kiriting.</p>
+  <div class="field"><label>Tasdiqlash kodi</label><input id="r-code" class="code" maxlength="6" inputmode="numeric" value="${REG.input}" placeholder="000000"></div>`;
+ }
+ const back = REG.step>1 ? `<button class="back-btn" onclick="regCollect();REG.step--;regRender()">Orqaga</button>` : '';
+ const label = REG.step===4 ? 'Tasdiqlash va yaratish' : 'Davom etish';
+ return prog + b + `<div id="err" class="err"></div><div class="navrow">${back}<button class="btn-main" onclick="regNext()">${label} ${ic('play',16)}</button></div>`;
+}
+function createAccount(){
+ const code='KS'+Math.random().toString(36).slice(2,6).toUpperCase();
+ const u={username:REG.user.trim().toLowerCase(), code, name:REG.ism.trim(), fam:REG.fam.trim(), cls:REG.sinf, email:REG.email.trim(), pass:REG.pass, g:REG.g, role:'student', xp:0, level:0, notifs:[]};
+ USERS.push(u); USER=u; REG=freshReg();
+ location.hash='dashboard'; route(); toast('Xush kelibsiz, '+u.name+'!');
+}
+pages.settings = () => `${head('Profil','Shaxsiy ma’lumotlar va sozlamalar')}
+ <div class="card" style="max-width:560px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <div class="avatar" style="width:64px;height:64px;font-size:22px">${USER.name[0]}</div>
+  <div class="grow"><h2 style="margin:0">${USER.name} ${USER.fam}</h2><p class="sub">@${USER.username} · ${USER.cls} · ${USER.role==='dev'?'Developer':'O‘quvchi'}</p></div>
+  <button class="btn" onclick="logoutUser()">${ic('logout')} Chiqish</button>
+ </div>
+ <div class="card" style="max-width:560px">
+  <div class="row" style="border:0"><div class="grow">Mavzu</div><button class="btn" onclick="toggleTheme()">${ic('moon')} O‘zgartirish</button></div>
+  <div class="row" style="border:0"><div class="grow">Bildirishnomalar</div><span class="pill ok">${(USER.notifs||[]).filter(n=>!n.read).length} ta yangi</span></div>
+ </div>`;
+(function(){
+ const st=document.createElement('style');
+ st.textContent = `.pill{display:inline-flex;align-items:center;gap:6px;line-height:1}.pill .ic{width:14px;height:14px;flex-shrink:0;vertical-align:middle}.btn .ic{vertical-align:middle}`;
+ document.head.appendChild(st);
+})();
+function lvl(){ const xp=(USER&&USER.xp)||0; return {n:Math.floor(xp/100), cur:xp%100, need:100, pct:xp%100}; }
+function finishQuiz(){
+ if(quizTitle && QZ.length){
+  DONE[quizTitle]=dayKey();
+  if(USER) USER.xp=(USER.xp||0)+score*20;
+ }
+ qi=QZ.length; route();
+}
+let FB = {apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',databaseURL:''};
+const FB_FIELDS = [['apiKey','API key'],['authDomain','Auth domain'],['projectId','Project ID'],['storageBucket','Storage bucket'],['messagingSenderId','Messaging sender ID'],['appId','App ID'],['databaseURL','Database URL']];
+function firebaseTab(){
+ return `<div class="card" style="max-width:640px"><h2>Firebase sozlamalari</h2><p class="sub" style="margin:6px 0 14px">Firebase konsolidagi “Project settings” bo‘limidan olingan qiymatlarni kiriting.</p>
+  ${FB_FIELDS.map(([k,l])=>`<div class="field"><label>${l}</label><input id="fb-${k}" value="${FB[k]}"></div>`).join('')}
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn primary" onclick="saveFB()">Saqlash</button><span class="pill">${FB.projectId?'Sozlangan: '+FB.projectId:'Sozlanmagan'}</span></div>
+  <p class="sub" style="font-size:12px;margin-top:14px">Eslatma: bu bo‘lim hozir konfiguratsiyani saqlaydi. Firestore bilan haqiqiy ma’lumot almashish alohida ulanishni talab qiladi.</p></div>`;
+}
+function saveFB(){ FB_FIELDS.forEach(([k])=>{ FB[k]=$('#fb-'+k).value.trim(); }); route(); toast('Firebase sozlamalari saqlandi'); }
+ADM_TABS = [['users','Foydalanuvchilar'],['bank','Savollar'],['daily','Testlar'],['site','Sayt matnlari'],['firebase','Firebase'],['ann','E’lonlar']];
+pages.admin = () => {
+ if(!USER || USER.role!=='dev') return head('Ruxsat yo‘q','Bu bo‘lim faqat dasturchi uchun');
+ const t=ADM.tab;
+ return `${head('Developer panel','Hammasini tahrirlash')}
+  <div class="tabs">${ADM_TABS.map(([k,l])=>`<button class="${t===k?'on':''}" onclick="admTab('${k}')">${l}</button>`).join('')}</div>
+  ${t==='users'?usersTab():t==='bank'?bankTab():t==='daily'?testsTab():t==='site'?siteTab():t==='firebase'?firebaseTab():annTab()}`;
 };
 window.addEventListener('hashchange', route);
 route();
