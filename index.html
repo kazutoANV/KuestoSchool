@@ -163,12 +163,14 @@ const PAGES = [
  {id:"homework", t:"Uy vazifalari", i:"task"},
  {id:"qa", t:"Savol-javob", i:"msg"},
  {id:"notif", t:"Bildirishnomalar", i:"bell"},
+ {id:"friends", t:"Do‘stlar", i:"friend"},
  {id:"dict", t:"Lug‘at", i:"dict"},
  {id:"calc", t:"Kalkulyator", i:"calc"},
  {group:"Rollar"},
  {id:"parent", t:"Ota-ona", i:"family"},
  {id:"teacher", t:"O‘qituvchi", i:"teacher"},
  {id:"admin", t:"Developer panel", i:"shield"},
+ {id:"themes", t:"Mavzular", i:"palette"},
  {id:"settings", t:"Profil", i:"user"},
  {id:"login", t:"Kirish / Ro‘yxat", i:"logout"}
 ];
@@ -675,6 +677,11 @@ let AUTH_MODE = 'login', AUTH_T = 't1';
 .auth input:-webkit-autofill,.auth input:-webkit-autofill:hover,.auth input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px rgba(255,255,255,.9) inset !important;-webkit-text-fill-color:#111827 !important;caret-color:#111827;transition:background-color 9999s ease-in-out 0s}
 .auth.t2 input:-webkit-autofill,.auth.t2 input:-webkit-autofill:hover,.auth.t2 input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #1e2538 inset !important;-webkit-text-fill-color:#f8fafc !important;caret-color:#f8fafc}
 .auth input:focus,.auth select:focus{outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.2)}
+.auth input,.auth select{color:#111827 !important;caret-color:#111827;-webkit-text-fill-color:#111827}
+.auth input::placeholder{color:#6b7280;opacity:1;-webkit-text-fill-color:#6b7280}
+.auth input[type=password]{letter-spacing:.14em;font-size:16px}
+.auth.t2 input,.auth.t2 select{color:#f8fafc !important;caret-color:#f8fafc;-webkit-text-fill-color:#f8fafc}
+.auth.t2 input::placeholder{color:#94a3b8;opacity:1;-webkit-text-fill-color:#94a3b8}
 .seg{display:flex;background:rgba(15,23,42,.06);border-radius:12px;padding:4px;margin:20px 0}
 .auth.t2 .seg{background:rgba(255,255,255,.08)}
 .seg button{flex:1;border:0;background:transparent;padding:9px;border-radius:9px;font:inherit;font-size:14px;cursor:pointer;color:inherit;opacity:.7;transition:all .25s}
@@ -1108,6 +1115,230 @@ pages.admin = () => {
   <div class="tabs">${ADM_TABS.map(([k,l])=>`<button class="${t===k?'on':''}" onclick="admTab('${k}')">${l}</button>`).join('')}</div>
   ${t==='users'?usersTab():t==='bank'?bankTab():t==='daily'?testsTab():t==='site'?siteTab():t==='firebase'?firebaseTab():annTab()}`;
 };
+(function(){
+ const sp=document.querySelector('svg[width="0"]');
+ if(sp) sp.insertAdjacentHTML('beforeend','<symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-.4-.2-.8-.4-1.1-.2-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4c0-4.9-4-8.6-9-8.6z" fill="currentColor" fill-opacity=".14"/><circle cx="7.5" cy="11" r="1.4" fill="currentColor"/><circle cx="10.5" cy="7.2" r="1.4" fill="currentColor"/><circle cx="15.2" cy="7.6" r="1.4" fill="currentColor"/></symbol>');
+})();
+const THEMES = [
+ {id:'blue', name:'Ko‘k-oq', a:'#2563eb', s:'#eaf1ff', dk:'#60a5fa', dks:'#1a2740'},
+ {id:'red', name:'Qizil-oq', a:'#dc2626', s:'#fee2e2', dk:'#f87171', dks:'#3b1518'},
+ {id:'redblue', name:'Qizil-ko‘k', a:'#dc2626', s:'#dbeafe', dk:'#f87171', dks:'#172554'}
+];
+let CUR_THEME = 'blue';
+function applyTheme(){
+ const dark = document.documentElement.dataset.theme==='dark';
+ const t = THEMES.find(x=>x.id===CUR_THEME) || THEMES[0];
+ const st = document.documentElement.style;
+ st.setProperty('--accent', dark ? t.dk : t.a);
+ st.setProperty('--accent-soft', dark ? t.dks : t.s);
+}
+function toggleTheme(){
+ const d=document.documentElement;
+ d.dataset.theme = d.dataset.theme==='dark' ? 'light' : 'dark';
+ applyTheme();
+}
+function setTheme(id){ CUR_THEME=id; applyTheme(); route(); toast('Mavzu o‘zgardi'); }
+applyTheme();
+pages.themes = () => `${head('Mavzular','Sayt ranglarini tanlang')}
+ <div class="grid">${THEMES.map(t=>`<div class="card" style="cursor:pointer;${CUR_THEME===t.id?'box-shadow:0 0 0 2px '+t.a+';border-color:'+t.a:''}" onclick="setTheme('${t.id}')"><div style="display:flex;gap:6px;margin-bottom:12px"><span style="flex:1;height:44px;border-radius:10px;background:${t.a}"></span><span style="flex:1;height:44px;border-radius:10px;background:${t.s};border:1px solid var(--line)"></span></div><h2 style="margin-bottom:4px">${t.name}</h2><p class="sub">${CUR_THEME===t.id?'Tanlangan':'Tanlash uchun bosing'}</p></div>`).join('')}</div>
+ <div class="card" style="margin-top:18px;max-width:560px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="stat-ic" style="margin:0">${ic('moon')}</div><div class="grow">Tungi rejim</div><button class="btn" onclick="toggleTheme();route()">${document.documentElement.dataset.theme==='dark'?'Yorug‘ rejim':'Tungi rejim'}</button></div>`;
+const SAVE_KEY = 'kuesto_users_v1';
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(USERS)); }catch(e){} }
+try{
+ const s = localStorage.getItem(SAVE_KEY);
+ if(s){ const arr = JSON.parse(s); if(Array.isArray(arr) && arr.length) USERS = arr; }
+}catch(e){}
+USERS.forEach(u=>{ if(!u.notifs) u.notifs=[]; });
+const _route0 = route;
+route = function(){ _route0(); save(); };
+const _regRender0 = regRender;
+regRender = function(){ _regRender0(); save(); };
+function genCode(){ const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s='KS'; for(let i=0;i<6;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
+function ensureSocial(u){
+ if(!u.invites) u.invites = Array.from({length:20}, ()=>({code:genCode(), used:false, by:null}));
+ if(!u.friends) u.friends = [];
+ if(!u.notifs) u.notifs = [];
+}
+const _route1 = route;
+route = function(){ USERS.forEach(ensureSocial); _route1(); };
+function acceptInvite(raw){
+ const c=(raw||'').trim().toUpperCase();
+ if(!USER) return;
+ if(!c) return toast('Kodni kiriting');
+ const owner = USERS.find(o=>(o.invites||[]).some(i=>i.code===c && !i.used));
+ if(!owner) return toast('Kod noto‘g‘ri yoki ishlatilgan');
+ if(owner===USER) return toast('O‘zingizning kodingizni ishlatib bo‘lmaydi');
+ if(USER.friends.includes(owner.username)) return toast('Bu do‘st allaqachon ro‘yxatda');
+ const inv=owner.invites.find(i=>i.code===c); inv.used=true; inv.by=USER.username;
+ owner.friends.push(USER.username); USER.friends.push(owner.username);
+ owner.notifs.push({type:'friend', t:'Do‘stlik qabul qilindi', d:`@${USER.username} (${USER.name} ${USER.fam}) sizning taklif kodingiz orqali do‘st bo‘ldi`, time:new Date().toLocaleString('uz-UZ'), read:false});
+ toast(owner.name+' bilan do‘st bo‘ldingiz!'); route();
+}
+function removeFriend(un){
+ USER.friends = USER.friends.filter(x=>x!==un);
+ const o=findUserByName(un); if(o) o.friends=(o.friends||[]).filter(x=>x!==USER.username);
+ route(); toast('Do‘st o‘chirildi');
+}
+function copyCode(c){
+ try{ navigator.clipboard.writeText(c); toast('Nusxa olindi: '+c); }catch(e){ toast('Kod: '+c); }
+}
+pages.friends = () => {
+ ensureSocial(USER);
+ const inv=USER.invites;
+ const free=inv.filter(i=>!i.used).length;
+ const friends=USER.friends.map(un=>findUserByName(un)).filter(Boolean);
+ return `${head('Do‘stlar', `${friends.length} do‘st · ${free} ta taklif kodi mavjud`)}
+ <div class="card" style="margin-bottom:16px"><h2>Do‘st taklif qilish</h2><p class="sub" style="margin:4px 0 14px">Sizga 20 ta taklif kodi berilgan. Har bir kod faqat bir marta ishlatiladi.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">${inv.map(i=>`<button class="btn" style="justify-content:space-between;${i.used?'opacity:.5':''}" ${i.used?'disabled':`onclick="copyCode('${i.code}')"`}><span style="font-weight:700;letter-spacing:.08em">${i.code}</span><span class="pill">${i.used?'Ishlatilgan':'Nusxa'}</span></button>`).join('')}</div></div>
+ <div class="card" style="margin-bottom:16px"><h2>Kod orqali do‘st bo‘lish</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="fr-code" placeholder="Taklif kodini kiriting" style="flex:1;min-width:200px;text-transform:uppercase"><button class="btn primary" onclick="acceptInvite($('#fr-code').value)">${ic('plus')} Qo‘shish</button></div></div>
+ <div class="card"><h2>Do‘stlarim</h2>${friends.length ? friends.map(f=>`<div class="row"><div class="avatar">${f.name[0]}</div><div class="grow">${f.name} ${f.fam}<div class="sub" style="font-size:12px">@${f.username} · ${f.cls}</div></div><button class="btn" onclick="removeFriend('${f.username}')">${ic('x')}</button></div>`).join('') : '<p class="sub">Hozircha do‘stlar yo‘q.</p>'}</div>`;
+};
+function regNext(){
+ regCollect();
+ if(!regValidate()) return;
+ if(REG.step===3){
+  REG.step=4; REG.input=''; regRender(); return;
+ }
+ if(REG.step===4){
+  const owner=findUserByName(REG.friend);
+  const c=(REG.input||'').trim().toUpperCase();
+  const inv=owner && (owner.invites||[]).find(i=>i.code===c && !i.used);
+  if(!inv){
+   REG.tries++;
+   if(REG.tries>=5){ REG=freshReg(); regRender(); return err('Ko‘p urinish. Qaytadan boshlang'); }
+   return err('Kod noto‘g‘ri yoki ishlatilgan');
+  }
+  return createAccount();
+ }
+ REG.step++; regRender();
+}
+function regStepHtml(){
+ const steps=['Shaxsiy','Hisob','Xavfsizlik','Tasdiqlash'];
+ const prog = `<div style="display:flex;gap:6px;margin:18px 0 6px">${steps.map((_,i)=>`<span style="flex:1;height:4px;border-radius:9px;background:${i<REG.step?'linear-gradient(90deg,#2563eb,#7c3aed)':'rgba(127,127,127,.25)'};transition:background .4s"></span>`).join('')}</div><p class="sub" style="font-size:12px">${REG.step}/4 · ${steps[REG.step-1]}</p>`;
+ let b='';
+ if(REG.step===1){
+  b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
+  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}"></div></div>`;
+ } else if(REG.step===2){
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
+  <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  <div class="field"><label>${ic('friend',16)} Do‘stingiz username</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div></div>
+  <p class="sub" style="font-size:12px;margin-top:-4px">Taklif kodini shu do‘stingizning Do‘stlar bo‘limidan olasiz.</p>`;
+ } else if(REG.step===3){
+  b = `<div class="field"><label>Parol</label><input id="r-pass" type="password" value="${REG.pass}" oninput="regPw()"></div>
+  <div class="pwbar"><span id="pw-m" style="width:${pwScore(REG.pass)*25}%"></span></div>
+  <div class="rules">${PW_RULES.map((r,i)=>`<span id="pr${i}" class="${r[1](REG.pass)?'okr':''}">${r[0]}</span>`).join('')}</div>
+  <div class="field"><label>Parolni tasdiqlang</label><input id="r-pass2" type="password" value="${REG.pass2}"></div>
+  <label class="terms"><input type="checkbox" id="r-terms" ${REG.terms?'checked':''} style="width:auto;margin-top:3px"><span>Maxfiylik siyosati va foydalanish shartlariga roziman</span></label>`;
+ } else {
+  b = `<p class="sub" style="margin-bottom:14px"><b>@${REG.friend.replace(/^@/,'')}</b> ning Do‘stlar bo‘limidagi taklif kodlaridan birini kiriting.</p>
+  <div class="field"><label>Taklif kodi</label><input id="r-code" class="code" maxlength="8" value="${REG.input}" placeholder="KS******" style="text-transform:uppercase"></div>`;
+ }
+ const back = REG.step>1 ? `<button class="back-btn" onclick="regCollect();REG.step--;regRender()">Orqaga</button>` : '';
+ const label = REG.step===4 ? 'Ro‘yxatdan o‘tish' : 'Davom etish';
+ return prog + b + `<div id="err" class="err"></div><div class="navrow">${back}<button class="btn-main" onclick="regNext()">${label} ${ic('play',16)}</button></div>`;
+}
+function createAccount(){
+ const owner=findUserByName(REG.friend);
+ const c=(REG.input||'').trim().toUpperCase();
+ const inv=owner.invites.find(i=>i.code===c && !i.used);
+ if(!inv) return err('Kod noto‘g‘ri yoki ishlatilgan');
+ const u={username:REG.user.trim().toLowerCase(), name:REG.ism.trim(), fam:REG.fam.trim(), cls:REG.sinf, email:REG.email.trim(), pass:REG.pass, g:REG.g, role:'student', xp:0, level:0, notifs:[], friends:[owner.username]};
+ ensureSocial(u);
+ inv.used=true; inv.by=u.username;
+ owner.friends.push(u.username);
+ owner.notifs.push({type:'friend', t:'Yangi do‘st!', d:`${u.name} ${u.fam} (@${u.username}) sizning taklif kodingiz orqali ro‘yxatdan o‘tdi`, time:new Date().toLocaleString('uz-UZ'), read:false});
+ USERS.push(u); USER=u; REG=freshReg();
+ location.hash='dashboard'; route(); toast('Xush kelibsiz, '+u.name+'!');
+}
+THEMES.splice(0, THEMES.length,
+ {id:'blue', name:'Oq-ko‘k', a:'#2563eb', s:'#eaf1ff', bg:'#ffffff', sf:'#f3f7ff', dk:'#60a5fa', dks:'#1a2740'},
+ {id:'red', name:'Oq-qizil', a:'#dc2626', s:'#fee2e2', bg:'#ffffff', sf:'#fff5f5', dk:'#f87171', dks:'#3b1518'}
+);
+if(!THEMES.some(t=>t.id===CUR_THEME)) CUR_THEME='blue';
+function applyTheme(){
+ const dark = document.documentElement.dataset.theme==='dark';
+ const t = THEMES.find(x=>x.id===CUR_THEME) || THEMES[0];
+ const st = document.documentElement.style;
+ st.setProperty('--accent', dark ? t.dk : t.a);
+ st.setProperty('--accent-soft', dark ? t.dks : t.s);
+ if(dark){ st.removeProperty('--bg'); st.removeProperty('--surface'); }
+ else { st.setProperty('--bg', t.bg); st.setProperty('--surface', t.sf); }
+}
+applyTheme();
+function clearNotifs(){ if(!USER) return; USER.notifs=[]; route(); toast('Bildirishnomalar o‘chirildi'); }
+try{
+ if(!localStorage.getItem('kuesto_notif_cleared_v1')){ USERS.forEach(u=>{ u.notifs=[]; }); localStorage.setItem('kuesto_notif_cleared_v1','1'); save(); }
+}catch(e){}
+pages.notif = () => {
+ const list=(USER.notifs||[]).slice().reverse();
+ if(!list.length) return `${head('Bildirishnomalar','Hozircha yo‘q')}<div class="card"><p class="sub">Hozircha bildirishnoma yo‘q.</p></div>`;
+ return `${head('Bildirishnomalar', list.filter(n=>!n.read).length+' ta yangi')}<div class="card">${list.map(n=>`<div class="row"><div class="stat-ic" style="margin:0">${ic(n.type==='friend'?'friend':'bell')}</div><div class="grow"><div style="font-size:14px;font-weight:600">${n.t}</div><div class="sub" style="font-size:13px">${n.d}</div></div></div>`).join('')}</div>
+ <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="readAll()">${ic('check')} O‘qilgan deb belgilash</button><button class="btn" onclick="clearNotifs()">${ic('x')} Hammasini o‘chirish</button></div>`;
+};
+(function(){
+ const st=document.createElement('style');
+ st.textContent = `
+.auth.t1{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,#fff),#fff 55%,color-mix(in srgb,var(--accent2) 12%,#fff)) !important}
+.auth.t2{background:linear-gradient(135deg,#0b1020,color-mix(in srgb,var(--accent) 30%,#0b1020) 55%,#0b1020) !important}
+.auth > .blob:nth-child(1){background:var(--accent) !important}
+.auth > .blob:nth-child(2){background:var(--accent2) !important}
+.auth::after{background:radial-gradient(circle,color-mix(in srgb,var(--accent) 30%,transparent),transparent 70%) !important}
+.auth.t1::before{background-image:radial-gradient(color-mix(in srgb,var(--accent) 35%,transparent) 1.2px,transparent 1.8px) !important}
+.btn-main{background:linear-gradient(90deg,var(--accent),var(--accent2)) !important}
+.btn-main:hover{box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 35%,transparent) !important}
+.feat .ic{color:var(--accent) !important}
+.gbtn.on{border-color:var(--accent) !important;background:color-mix(in srgb,var(--accent) 14%,transparent) !important;box-shadow:0 10px 24px color-mix(in srgb,var(--accent) 25%,transparent) !important}
+.auth input:focus,.auth select:focus{border-color:var(--accent) !important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent) !important}
+[style*="#2563eb"]{background:linear-gradient(90deg,var(--accent),var(--accent2)) !important}
+`;
+ document.head.appendChild(st);
+})();
+PW_RULES.splice(0, PW_RULES.length,
+ ['Kamida 8 belgi', p=>p.length>=8],
+ ['Katta va kichik harf', p=>/[A-Z]/.test(p)&&/[a-z]/.test(p)],
+ ['Kamida bitta raqam', p=>/\d/.test(p)],
+ ['Maxsus belgi (!@# ...)', p=>/[^A-Za-z0-9]/.test(p)]
+);
+function applyTheme(){
+ const dark = document.documentElement.dataset.theme==='dark';
+ const t = THEMES.find(x=>x.id===CUR_THEME) || THEMES[0];
+ const st = document.documentElement.style;
+ st.setProperty('--accent', dark ? t.dk : t.a);
+ st.setProperty('--accent-soft', dark ? t.dks : t.s);
+ st.setProperty('--accent2', CUR_THEME==='red' ? (dark?'#f87171':'#b91c1c') : (dark?'#60a5fa':'#1d4ed8'));
+ if(dark){ st.removeProperty('--bg'); st.removeProperty('--surface'); }
+ else { st.setProperty('--bg', t.bg); st.setProperty('--surface', t.sf); }
+}
+applyTheme();
+function regStepHtml(){
+ const steps=['Shaxsiy ma\u2019lumot','Hisob','Xavfsizlik','Tasdiqlash'];
+ const prog = `<div style="display:flex;gap:6px;margin:18px 0 6px">${steps.map((_,i)=>`<span style="flex:1;height:4px;border-radius:9px;background:${i<REG.step?'linear-gradient(90deg,#2563eb,#7c3aed)':'rgba(127,127,127,.25)'};transition:background .4s"></span>`).join('')}</div><p class="sub" style="font-size:12px">${REG.step}/4 \u00b7 ${steps[REG.step-1]}</p>`;
+ let b='';
+ if(REG.step===1){
+  b = `<div class="gender">${GENDER.map(([k,l,d])=>`<button type="button" class="gbtn ${REG.g===k?'on':''}" onclick="regCollect();REG.g='${k}';regRender()"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span>${l}</span></button>`).join('')}</div>
+  <div class="reg-grid"><div class="field"><label>Ism</label><input id="r-ism" value="${REG.ism}" placeholder="Masalan: Aziza"></div><div class="field"><label>Familiya</label><input id="r-fam" value="${REG.fam}" placeholder="Masalan: Karimova"></div></div>`;
+ } else if(REG.step===2){
+  b = `<div class="field"><label>Username</label><input id="r-user" value="${REG.user}" placeholder="masalan: aziza_07"></div>
+  <div class="field"><label>Email</label><input id="r-email" value="${REG.email}" placeholder="ism@maktab.uz"></div>
+  <div class="reg-grid"><div class="field"><label>Sinf</label><select id="r-sinf">${SINFS.map(s=>`<option ${REG.sinf===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  <div class="field"><label>${ic('friend',16)} Do\u2018stingizning username\u2019i</label><input id="r-friend" value="${REG.friend}" placeholder="@username"></div></div>
+  <p class="sub" style="font-size:12px;margin-top:-4px">Taklif kodini aynan shu do\u2018stingizning \u201cDo\u2018stlar\u201d bo\u2018limidan olasiz.</p>`;
+ } else if(REG.step===3){
+  b = `<div class="field"><label>Parol</label><input id="r-pass" type="password" value="${REG.pass}" oninput="regPw()"></div>
+  <div class="pwbar"><span id="pw-m" style="width:${pwScore(REG.pass)*25}%"></span></div>
+  <div class="rules">${PW_RULES.map((r,i)=>`<span id="pr${i}" class="${r[1](REG.pass)?'okr':''}">${r[0]}</span>`).join('')}</div>
+  <div class="field"><label>Parolni tasdiqlang</label><input id="r-pass2" type="password" value="${REG.pass2}"></div>
+  <label class="terms"><input type="checkbox" id="r-terms" ${REG.terms?'checked':''} style="width:auto;margin-top:3px"><span>Maxfiylik siyosati va foydalanish shartlariga roziman</span></label>`;
+ } else {
+  b = `<p class="sub" style="margin-bottom:14px"><b>@${REG.friend.replace(/^@/,'')}</b> ning \u201cDo\u2018stlar\u201d bo\u2018limidagi taklif kodlaridan birini kiriting. Har bir kod bir marta ishlatiladi.</p>
+  <div class="field"><label>Taklif kodi</label><input id="r-code" class="code" maxlength="8" value="${REG.input}" placeholder="KS******" style="text-transform:uppercase"></div>`;
+ }
+ const back = REG.step>1 ? `<button class="back-btn" onclick="regCollect();REG.step--;regRender()">Orqaga</button>` : '';
+ const label = REG.step===4 ? 'Ro\u2018yxatdan o\u2018tish' : 'Davom etish';
+ return prog + b + `<div id="err" class="err"></div><div class="navrow">${back}<button class="btn-main" onclick="regNext()">${label} ${ic('play',16)}</button></div>`;
+}
 window.addEventListener('hashchange', route);
 route();
 </script>
