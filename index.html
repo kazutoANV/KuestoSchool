@@ -89,6 +89,9 @@ label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
  .mobile-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:10}
 }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -1985,6 +1988,16 @@ pages.themes = () => {
 })();
 window.addEventListener('hashchange', route);
 route();
+</script>
+<script>
+try{
+  if (typeof firebase !== "undefined" && FB && FB.apiKey && FB.projectId) {
+    if (!firebase.apps.length) firebase.initializeApp(FB);
+    window.fbAuth = firebase.auth();
+    window.fbDb = firebase.firestore();
+    window.fbReady = true;
+  } else { window.fbReady = false; console.warn("Firebase config yoki SDK topilmadi"); }
+}catch(e){ window.fbReady = false; console.error("Firebase ulanish xatosi:", e); }
 </script>
 </body>
 </html>
